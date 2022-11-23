@@ -26,7 +26,10 @@ public class MainApplication extends JFrame {
     private SoundEffect themeSound;
     private MainApplication currentFrame;
 
+    private String projectPath = "src/main/java/Project3_6480250";
+
     public void setMainProp(){
+
         Thread mainPropThread = new Thread(){
             public void run(){
                 //do smth with while loop here
@@ -34,8 +37,21 @@ public class MainApplication extends JFrame {
         };
         mainPropThread.start();
     }
+
+    public void setEnemy(){
+        Thread enemyThread = new Thread(){
+            public void run(){
+                Enemy enemy = new Enemy(currentFrame);
+                drawpane.add(enemy);
+                //while enemy isn't dead do something
+            }
+        };
+        //update player score or smth
+        enemyThread.start();
+    }
     public void setCrashItem(){
-        Thread itemThread = new Thread(){
+        //what if we generate the projectile around our enemy as a circle
+        Thread crashThread = new Thread(){
             public void run(){
                 CrashItems item = new CrashItems(currentFrame);
                 drawpane.add(item);
@@ -43,13 +59,14 @@ public class MainApplication extends JFrame {
             }
         };
         //update playerhp
+        crashThread.start();
     }
 
     public MainApplication(){
-
+        //main part of the application
     }
     public static void main(String [] args){
-
+        new MainApplication();
     }
 
 }
