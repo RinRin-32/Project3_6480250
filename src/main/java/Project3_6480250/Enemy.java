@@ -21,6 +21,7 @@ public class Enemy extends JLabel {
 
     public void gotHit(){
         //play sound
+
     }
 
     public int getpoint(){

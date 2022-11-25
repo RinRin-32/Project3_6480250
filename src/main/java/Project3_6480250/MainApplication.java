@@ -25,7 +25,7 @@ public class MainApplication extends JFrame {
     private ImageIcon backgroundImg;
     private SoundEffect themeSound;
     private MainApplication currentFrame;
-    private int frameWidth = 1200, frameHeight = 1000;
+    private int frameWidth = 1280, frameHeight = 720;
 
     private String projectPath = "src/main/java/Project3_6480250";
 
@@ -82,6 +82,17 @@ public class MainApplication extends JFrame {
         drawpane = new JLabel();
         drawpane.setIcon(backgroundImg);
         drawpane.setLayout(null);
+
+
+
+
+
+
+
+
+
+
+        validate();
     }
 
     class MyImageIcon extends ImageIcon
