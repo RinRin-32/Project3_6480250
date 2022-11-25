@@ -25,6 +25,7 @@ public class MainApplication extends JFrame {
     private ImageIcon backgroundImg;
     private SoundEffect themeSound;
     private MainApplication currentFrame;
+    private int frameWidth = 1200, frameHeight = 1000;
 
     private String projectPath = "src/main/java/Project3_6480250";
 
@@ -64,7 +65,39 @@ public class MainApplication extends JFrame {
 
     public MainApplication(){
         //main part of the application
+        setTitle("This is a Frame");
+        setBounds(200, 200, frameWidth, frameHeight);
+        setVisible(true);
+        setDefaultCloseOperation( WindowConstants.EXIT_ON_CLOSE );
+
+        contentpane = (JPanel)getContentPane();
+        contentpane.setLayout( new BorderLayout() );
+        AddComponents();
     }
+
+    public void AddComponents() {
+        String path = "src/main/java/Project3_6480250/resources/";
+
+        backgroundImg  = new MyImageIcon(path + "gusBackground.jpg").resize(frameWidth, frameHeight);
+        drawpane = new JLabel();
+        drawpane.setIcon(backgroundImg);
+        drawpane.setLayout(null);
+    }
+
+    class MyImageIcon extends ImageIcon
+    {
+        public MyImageIcon(String fname)  { super(fname); }
+        public MyImageIcon(Image image)   { super(image); }
+
+        public MyImageIcon resize(int width, int height)
+        {
+            Image oldimg = this.getImage();
+            Image newimg = oldimg.getScaledInstance(width, height, java.awt.Image.SCALE_SMOOTH);
+            return new MyImageIcon(newimg);
+        }
+    };
+
+
     public static void main(String [] args){
         new MainApplication();
     }
