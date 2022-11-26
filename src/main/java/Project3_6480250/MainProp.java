@@ -14,6 +14,8 @@ public class MainProp extends JLabel {
     private int speed;//sleep duration
     //set default values like facing left or right and or movement
 
+    private int hp = 40;
+
     public MainProp(MainApplication pf){
         parentFrame = pf;
 
@@ -28,7 +30,9 @@ public class MainProp extends JLabel {
     public void setSpeed(int s) { speed = s;}
     public void setWalk(boolean w) {walk = w;}
     public boolean isWalk() { return walk;}
+
     public void updateLocation(){
+
         if(up){
             //curY = smth
             //if on edge frame move to parentFrame.getHeight()
@@ -44,5 +48,9 @@ public class MainProp extends JLabel {
             e.printStackTrace();
         }
     }
+
+    public synchronized void updateHp(int n ){ hp += n;}
+
+    public int getHealth(){ return hp;}
 
 }

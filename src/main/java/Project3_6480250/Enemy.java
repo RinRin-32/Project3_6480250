@@ -8,13 +8,14 @@ public class Enemy extends JLabel {
     private String [] imageFiles = {"src/main/java/Project3_6480250/resources/jesse.png","src/main/java/Project3_6480250/resources/walt_Boss.png"};//haven't added image yet
     private String soundFiles = "src/main/java/Project3_6480250/resources/bigpew.mp3";
 
+    private boolean isBoss = false;
     private int jwidth = 250, jheight = 359, wWidth = 500, wheight = 418;//has to set size here
     private int curX, curY = 0; //has to set location here
     private int speed = 500; //set sleep time, editable
 
     private SoundEffect   shootSound;
 
-    public Enemy(MainApplication pf){
+    public Enemy(MainApplication pf, boolean mobselect){
         parentFrame = pf;
 
         curX = (int)(Math.random() * 5555) % (parentFrame.getWidth()-100);
@@ -26,8 +27,21 @@ public class Enemy extends JLabel {
         shootSound = new SoundEffect(soundFiles);
 
         //setIcon(icon);
-        setIcon(jesseEm);
-        setBounds(curX, curY, jwidth, jheight);
+        if(mobselect){
+            setIcon(waltBo);
+            setBounds(curX,curY, wWidth, wheight);
+            isBoss = true;
+        }else {
+            setIcon(jesseEm);
+            setBounds(curX, curY, jwidth, jheight);
+        }
+
+    }
+
+    public boolean isBoss(){ return isBoss;}
+
+    public void moveSet(){
+        //setLocation();
     }
 
 
@@ -44,3 +58,4 @@ public class Enemy extends JLabel {
 
     public void disappear(){ setVisible(false);}
 }
+

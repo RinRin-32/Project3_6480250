@@ -42,7 +42,7 @@ public class MainApplication extends JFrame {
     public void setEnemy(){
         Thread enemyThread = new Thread(){
             public void run(){
-                Enemy enemy = new Enemy(currentFrame);
+                Enemy enemy = new Enemy(currentFrame, false);
                 drawpane.add(enemy);
                 //while enemy isn't dead do something
             }
@@ -50,11 +50,11 @@ public class MainApplication extends JFrame {
         //update player score or smth
         enemyThread.start();
     }
-    public void setCrashItem(){
+    public void setCrashItem(Enemy e){
         //what if we generate the projectile around our enemy as a circle
         Thread crashThread = new Thread(){
             public void run(){
-                CrashItems item = new CrashItems(currentFrame);
+                CrashItems item = new CrashItems(currentFrame, e);
                 drawpane.add(item);
                 //do smth in while loop
             }
