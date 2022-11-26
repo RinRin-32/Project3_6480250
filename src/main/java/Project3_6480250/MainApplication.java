@@ -45,6 +45,8 @@ public class MainApplication extends JFrame {
                 Enemy enemy = new Enemy(currentFrame, false);
                 drawpane.add(enemy);
                 //while enemy isn't dead do something
+
+                setCrashItem(enemy);//creates enemy's projectile
             }
         };
         //update player score or smth

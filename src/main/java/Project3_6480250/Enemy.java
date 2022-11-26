@@ -36,13 +36,13 @@ public class Enemy extends JLabel {
             setBounds(curX, curY, jwidth, jheight);
         }
 
+        //setlocation
+
     }
 
     public boolean isBoss(){ return isBoss;}
 
-    public void moveSet(){
-        //setLocation();
-    }
+    //Enemy doesn't move so no need to update its location
 
 
 
