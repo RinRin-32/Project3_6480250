@@ -25,7 +25,7 @@ public class CrashItems extends JLabel {
         itemImg = new ImageIcon(ImageCrystal).resize(width,height);
         //set images here
         //set sound
-        //hitSound = new SoundEffect(); //I don't know if you use a big pew or small pew
+        hitSound = new SoundEffect(hit); //I don't know if you use a big pew or small pew
         //setIcon(icon);
         hitSound = new SoundEffect(hit);
         if(e.isBoss()){
@@ -44,14 +44,16 @@ public class CrashItems extends JLabel {
         width += 30;
         parentFrame = pf;
         itemImg = new ImageIcon(sue).resize(width,height);
+        shootSound = new SoundEffect(soundFiles[0]);
         hitSound = new SoundEffect(hit);
         setIcon(itemImg);
         curX = m.getX(); curY = m.getY()-50;
         setBounds(curX,curY,width, height);
     }
 
-    public void movedown(){
-        //setLocation();
+    public void movedown() throws InterruptedException {
+        setLocation(getX(), getY()+20);
+        Thread.sleep(speed);
     }
 
     public void playHitSound() { hitSound.playOnce();}

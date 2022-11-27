@@ -28,6 +28,7 @@ public class MainApplication extends JFrame {
     private int frameWidth = 1280, frameHeight = 720;
 
     private String projectPath = "src/main/java/Project3_6480250";
+    private String resourcePath = projectPath + "/resources/";
 
     public void setMainProp(){
 
@@ -74,13 +75,12 @@ public class MainApplication extends JFrame {
 
         contentpane = (JPanel)getContentPane();
         contentpane.setLayout( new BorderLayout() );
-        AddComponents();
+        frameone();
+        // call frame 2 once a button is pressed on frameone frametwo();
     }
 
-    public void AddComponents() {
-        String path = "src/main/java/Project3_6480250/resources/";
-
-        backgroundImg  = new MyImageIcon(path + "gusBackground.jpg").resize(frameWidth, frameHeight);
+    public void frameone() {
+        backgroundImg  = new MyImageIcon(resourcePath + "gusBackground.jpg").resize(frameWidth, frameHeight);
         drawpane = new JLabel();
         drawpane.setIcon(backgroundImg);
         drawpane.setLayout(null);
@@ -95,6 +95,20 @@ public class MainApplication extends JFrame {
 
 
         validate();
+    }
+
+    public void frametwo(){
+        //the frame with actual game
+        //when player hp == 0 go to death screen
+
+
+    }
+    public void deathScreen(){
+        //deathscreen leads back to frame two or end credit
+    }
+
+    public void endCredit(){
+        //end credit can lead to frame one
     }
 
     class MyImageIcon extends ImageIcon
@@ -114,7 +128,6 @@ public class MainApplication extends JFrame {
     public static void main(String [] args){
         new MainApplication();
     }
-
 }
 
 class ImageIcon extends javax.swing.ImageIcon{

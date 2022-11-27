@@ -6,7 +6,9 @@ public class Enemy extends JLabel {
     private ImageIcon jesseEm, waltBo;
     private MainApplication parentFrame;
     private String [] imageFiles = {"src/main/java/Project3_6480250/resources/jesse.png","src/main/java/Project3_6480250/resources/walt_Boss.png"};//haven't added image yet
-    private String soundFiles = "src/main/java/Project3_6480250/resources/bigpew.mp3";
+    //private String [] soundFiles = {"src/main/java/Project3_6480250/resources/bigpew.mp3", "src/main/java/Project3_6480250/resources/smolpew.mp3"};
+
+    private int hp;
 
     private boolean isBoss = false;
     private int jwidth = 250, jheight = 359, wWidth = 500, wheight = 418;//has to set size here
@@ -24,16 +26,20 @@ public class Enemy extends JLabel {
         waltBo = new ImageIcon(imageFiles[1]).resize(wWidth, wheight); //resize()
 
         //set sound
-        shootSound = new SoundEffect(soundFiles);
+
 
         //setIcon(icon);
         if(mobselect){
             setIcon(waltBo);
             setBounds(curX,curY, wWidth, wheight);
             isBoss = true;
+            hp = 100;
+            //shootSound = new SoundEffect(soundFiles[0]);
         }else {
             setIcon(jesseEm);
             setBounds(curX, curY, jwidth, jheight);
+            hp = 20;
+            //shootSound = new SoundEffect(soundFiles[1]);
         }
 
         //setlocation
@@ -42,18 +48,26 @@ public class Enemy extends JLabel {
 
     public boolean isBoss(){ return isBoss;}
 
-    //Enemy doesn't move so no need to update its location
+    public void moveset(){
+        //make enemy move across the screen from the top
+    }
 
 
-
-    public void gotHit(){
-        //play sound
+    public void shoot(){
+        shootSound.playOnce();
+    }
+    public synchronized void gotHit(int n){
+        hp-= n;
 
     }
 
     public int getpoint(){
         //return point
-        return 0;
+        if(isBoss){
+            return 10;
+        }else{
+            return 2;
+        }
     }
 
     public void disappear(){ setVisible(false);}
