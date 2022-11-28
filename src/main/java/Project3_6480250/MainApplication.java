@@ -119,6 +119,7 @@ public class MainApplication extends JFrame {
 
         validate();
         this.setVisible(false);
+        this.dispose(); //for closing this jframe
         MainApplication frame2 = new MainApplication(1); //for making gameplay
         MainApplication death = new MainApplication(2); //for making death screen
     }
