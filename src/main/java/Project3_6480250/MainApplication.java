@@ -7,6 +7,8 @@ Sittipoj, Techathaicharoen, 6380361
 */
 package Project3_6480250;
 
+import com.sun.tools.javac.Main;
+
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
@@ -66,21 +68,42 @@ public class MainApplication extends JFrame {
         crashThread.start();
     }
 
-    public MainApplication(){
-        //main part of the application
-        setTitle("This is a Frame");
-        setBounds(200, 200, frameWidth, frameHeight);
-        setVisible(true);
-        setDefaultCloseOperation( WindowConstants.EXIT_ON_CLOSE );
 
-        contentpane = (JPanel)getContentPane();
-        contentpane.setLayout( new BorderLayout() );
-        frameone();
-        // call frame 2 once a button is pressed on frameone frametwo();
+    public void execution(int n){
+        //main part of the application
+        if(n==0) {
+            setTitle("This is a Frame");
+            setBounds(200, 200, frameWidth, frameHeight);
+            setVisible(true);
+            setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
+            contentpane = (JPanel) getContentPane();
+            contentpane.setLayout(new BorderLayout());
+            frameone();
+            // call frame 2 once a button is pressed on frameone frametwo();
+        }else if(n == 1){
+            //settitle("gameplay");
+            //setBounds
+            //setVisibility(true);
+            setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
+            contentpane = (JPanel) getContentPane();
+            contentpane.setLayout(new BorderLayout());
+        }else if(n == 2){
+            //settitle("deathscreen");
+            //setBounds
+            //setVisibility(true);
+            setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+            contentpane = (JPanel) getContentPane();
+            contentpane.setLayout(new BorderLayout());
+        }
+    }
+    public MainApplication(int frame){
+        execution(0);
     }
 
     public void frameone() {
-        backgroundImg  = new MyImageIcon(resourcePath + "gusBackground.jpg").resize(frameWidth, frameHeight);
+        backgroundImg  = new ImageIcon(resourcePath + "gusBackground.jpg").resize(frameWidth, frameHeight);
         drawpane = new JLabel();
         drawpane.setIcon(backgroundImg);
         drawpane.setLayout(null);
@@ -88,30 +111,43 @@ public class MainApplication extends JFrame {
 
 
 
-
+        //add listeners for interactives, difficuulty settings
 
 
 
 
 
         validate();
+        this.setVisible(false);
+        MainApplication frame2 = new MainApplication(1); //for making gameplay
+        MainApplication death = new MainApplication(2); //for making death screen
     }
 
     public void frametwo(){
         //the frame with actual game
         //when player hp == 0 go to death screen
+        //backgroundImg = new ImageIcon();//maingameplay backgroudn
+        //drawpane.setIcon(frame2.backgroundImg);
+
+        //add listeners for gameplays
 
 
     }
     public void deathScreen(){
-        //deathscreen leads back to frame two or end credit
+        //the frame with actual game
+        //when player hp == 0 go to death screen
+        //backgroundImg = new ImageIcon();//maingameplay backgroudn
+        //drawpane.setIcon(frame2.backgroundImg);
+
+        //add listeners for gameplays
+
     }
 
     public void endCredit(){
-        //end credit can lead to frame one
+        //end credit just make swing text box showing score + our names
     }
 
-    class MyImageIcon extends ImageIcon
+/*    class MyImageIcon extends ImageIcon
     {
         public MyImageIcon(String fname)  { super(fname); }
         public MyImageIcon(Image image)   { super(image); }
@@ -122,11 +158,11 @@ public class MainApplication extends JFrame {
             Image newimg = oldimg.getScaledInstance(width, height, java.awt.Image.SCALE_SMOOTH);
             return new MyImageIcon(newimg);
         }
-    };
+    };*/
 
 
     public static void main(String [] args){
-        new MainApplication();
+        new MainApplication(0);
     }
 }
 
