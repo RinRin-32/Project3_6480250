@@ -7,17 +7,13 @@ Sittipoj, Techathaicharoen, 6380361
 */
 package Project3_6480250;
 
-import com.sun.tools.javac.Main;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
+import java.awt.event.*;
 
 public class MainApplication extends JFrame {
 
@@ -26,7 +22,9 @@ public class MainApplication extends JFrame {
     private JComboBox combo;
     private JToggleButton []soundtoggle;
     private ButtonGroup bgroup;
-    private JButton startgame;//smth
+
+    private MyButton button;
+    private JButton setname;
     private JTextField text;
     private MainProp gus;
     private ImageIcon backgroundImg;
@@ -39,6 +37,10 @@ public class MainApplication extends JFrame {
     private String playername;
 
     private int score = 0;
+
+    public String getPlayername(){
+        return playername;
+    }
 
     public void setMainProp(){
 
@@ -75,27 +77,44 @@ public class MainApplication extends JFrame {
         //update playerhp
         crashThread.start();
     }
-
-
-    public void execution(){
-        //main part of the application
-            setTitle("It's Sauling time");
-            setSize(frameWidth+1000, frameHeight+50);
-            setBounds(275, 200, frameWidth, frameHeight);
-            setResizable(false);
-            setVisible(true);
-            setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-            currentFrame = this;
-
-            contentpane = (JPanel)getContentPane();
-            contentpane.setLayout(new BorderLayout());
-
-            frameone();
-            // call frame 2 once a button is pressed on frameone frametwo();
-
+    public void movebutton(){
+        Thread buttonmover = new Thread(){
+            public void run(){
+                while(!button.isClicked()) {
+                    button.blink();
+                }
+            }
+        };
+        buttonmover.start();
     }
-    public MainApplication(){
-        execution();
+
+
+    public void execution(int n){
+        //main part of the application
+            // call frame 2 once a button is pressed on frameone frametwo();
+        setSize(frameWidth+1000, frameHeight+50);
+        setBounds(275, 200, frameWidth, frameHeight);
+        setResizable(false);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        currentFrame = this;
+
+        contentpane = (JPanel) getContentPane();
+        contentpane.setLayout(new BorderLayout());
+        if(n == 1){
+            setTitle("gameplay");
+            frametwo();
+        }else if(n == 2){
+            setTitle("deathscreen");
+            deathScreen();
+        }else{
+            setTitle("It's Sauling time");
+            frameone();
+        }
+        setVisible(true);
+    }
+    public MainApplication(int frame, String pn){
+        execution(frame);
+        playername = pn;
     }
 
     public void frameone() {
@@ -106,7 +125,8 @@ public class MainApplication extends JFrame {
         themeSound = new SoundEffect(resourcePath + "startscreensong.wav"); themeSound.playLoop();
         drawpane.setVisible(true);
         //drawpane.repaint();
-        currentFrame.add(drawpane);
+        this.add(drawpane);
+        /*
         startgame = new JButton("Start Game");
         startgame.addActionListener(new ActionListener() {
             @Override
@@ -114,7 +134,7 @@ public class MainApplication extends JFrame {
                 themeSound.stop();
                 frametwo();
             }
-        });
+        });*/
         text = new JTextField("Saul", 5);
         text.setEditable(true);
         soundtoggle = new JToggleButton[2];
@@ -143,10 +163,20 @@ public class MainApplication extends JFrame {
             bgroup.add(soundtoggle[i]);
         }
 
+        setname = new JButton("Set Name");
+        setname.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                text.setEditable(false);
+                playername = text.getText();
+            }
+        });
+
         JPanel control = new JPanel();
         control.setBounds(0,0, 1000, 50);
         control.add(new JLabel("Player's name :" ));
         control.add(text);
+        control.add(setname);
         String [] difficulty = {"easy", "medium", "slow"};
         combo = new JComboBox(difficulty);
         combo.setSelectedIndex(1);
@@ -157,13 +187,18 @@ public class MainApplication extends JFrame {
                 //if(item.compareToIgnoreCase("smth"))
             }
         });
-        control.add(new JLabel("Start Game: "));
-        control.add(startgame);
+        //control.add(new JLabel("Start Game: "));
+        //control.add(startgame);
+        control.add(new JLabel("Difficulty set : "));
         control.add(combo);
         control.add(soundtoggle[0]); control.add(soundtoggle[1]);
         contentpane.add(control, BorderLayout.NORTH);
         contentpane.add(drawpane, BorderLayout.CENTER);
-        currentFrame.repaint();
+        button = new MyButton(this);
+        movebutton();
+        drawpane.add(button);
+
+        this.repaint();
 
 
 
@@ -192,7 +227,9 @@ public class MainApplication extends JFrame {
         //drawpane.setIcon(frame2.backgroundImg);
 
         //add listeners for gameplays
-        text.setEditable(false);
+
+        //text.setEditable(false);
+
         themeSound = new SoundEffect(resourcePath + "maingamesong.wav"); themeSound.playLoop();
 
 
@@ -206,6 +243,12 @@ public class MainApplication extends JFrame {
         //add listeners for gameplays
 
     }
+    public void getrid(){
+        themeSound.stop();
+        this.dispose();
+    }
+
+
 
 
 
@@ -213,7 +256,7 @@ public class MainApplication extends JFrame {
 
     public static void main(String [] args){
 
-        new MainApplication();
+        new MainApplication(0, null);
     }
 }
 
@@ -242,4 +285,74 @@ class SoundEffect{
     public void playOnce() { clip.setMicrosecondPosition(0); clip.start();}
     public void playLoop() {clip.loop(Clip.LOOP_CONTINUOUSLY);}
     public void stop() {clip.stop();}
+}
+
+class MyButton extends JLabel implements MouseListener {
+    private ImageIcon button;
+    private MainApplication parentframe;
+    private String image = "src/main/java/Project3_6480250/resources/suebutton.png";
+    private int width = 466, height = 399;
+    private int curX = 400, curY = 200;
+    private int speed = 700;
+    private boolean clicked = false, isNull = false;
+
+    public MyButton(MainApplication pf){
+        parentframe = pf;
+        button = new ImageIcon(image).resize(width,height);
+        setIcon(button);
+        setBounds(curX, curY, width, height);
+        addMouseListener(this);
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        clicked = true;
+        String curplay = parentframe.getPlayername();
+        try {
+            parentframe.getrid();
+        }catch (Exception error){
+            error.printStackTrace();
+        }
+        new MainApplication(1, curplay);
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
+    }
+    public boolean isClicked(){
+        return clicked;
+    }
+    public void blink(){
+        if(isNull){
+            setIcon(button);
+            isNull = false;
+        }else{
+            setIcon(null);
+            isNull = true;
+        }
+        repaint();
+        try{
+            Thread.sleep(speed);
+        }catch (InterruptedException e){
+            e.printStackTrace();
+        }
+    }
+
+
 }
