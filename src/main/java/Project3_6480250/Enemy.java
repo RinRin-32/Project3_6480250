@@ -6,13 +6,13 @@ public class Enemy extends JLabel {
     private ImageIcon jesseEm, waltBo;
     private MainApplication parentFrame;
     private String [] imageFiles = {"src/main/java/Project3_6480250/resources/jesse.png","src/main/java/Project3_6480250/resources/walt_Boss.png"};//haven't added image yet
-    //private String [] soundFiles = {"src/main/java/Project3_6480250/resources/bigpew.mp3", "src/main/java/Project3_6480250/resources/smolpew.mp3"};
+    private String [] soundFiles = {"src/main/java/Project3_6480250/resources/bigpew.wav", "src/main/java/Project3_6480250/resources/smolpew.wav"};
 
     private int hp;
 
     private boolean isBoss = false;
-    private int jwidth = 250, jheight = 359, wWidth = 500, wheight = 418;//has to set size here
-    private int curX, curY = 0; //has to set location here
+    private int jwidth = 125, jheight = 129, wWidth = 250, wheight = 209;//has to set size here
+    private int curX, curY = 50; //has to set location here
     private int speed = 500; //set sleep time, editable
     private Enemy thisene;
 
@@ -22,30 +22,27 @@ public class Enemy extends JLabel {
         thisene = this;
         parentFrame = pf;
 
-        curX = (int)(Math.random() * 5555) % (parentFrame.getWidth()-100);
+        curX = (int)(Math.random() * parentFrame.getWidth()-1) + 1;
         //set images here
         jesseEm = new ImageIcon(imageFiles[0]).resize(jwidth, jheight);
         waltBo = new ImageIcon(imageFiles[1]).resize(wWidth, wheight); //resize()
 
         //set sound
-        curY = 200;
 
 
         //setIcon(icon);
         if(mobselect){
             setIcon(waltBo);
-            setBounds(curX,curY, wWidth, wheight);
             isBoss = true;
             hp = 100;
-            //shootSound = new SoundEffect(soundFiles[0]);
+            shootSound = new SoundEffect(soundFiles[0]);
         }else {
             setIcon(jesseEm);
-            setBounds(curX, curY, jwidth, jheight);
             hp = 20;
-            //shootSound = new SoundEffect(soundFiles[1]);
-        }
+            shootSound = new SoundEffect(soundFiles[1]);
 
-        //setlocation
+        }
+        setBounds(curX,curY, wWidth, wheight);
 
     }
 

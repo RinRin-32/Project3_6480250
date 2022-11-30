@@ -36,7 +36,7 @@ public class MainApplication extends JFrame implements KeyListener {
     private String resourcePath = projectPath + "/resources/";
     private String playername;
 
-    private int score = 0; private boolean muted = false; private int diff;
+    private int score = 0; private boolean muted = false; private int diff, speed;
 
     public String getPlayername(){
         return playername;
@@ -55,8 +55,22 @@ public class MainApplication extends JFrame implements KeyListener {
         //once created the enemy automatically start shooting
         Thread enemyThread = new Thread(){
             public void run(){
-                Enemy enemy = new Enemy(currentFrame, false);
-                drawpane.add(enemy);
+                int i = 0;
+                if(diff != 5) {
+                    while (player.getHealth() > 0) {
+                        if (i < 5) {
+                            Enemy enemy = new Enemy(currentFrame, false);
+                            drawpane.add(enemy);
+                            drawpane.repaint();
+                        }
+                        i++;
+                        try {
+                            Thread.sleep((i+1) * speed * 1000 / diff);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
             }
         };
         //update player score or smth
@@ -68,13 +82,38 @@ public class MainApplication extends JFrame implements KeyListener {
         //once created the enemy automatically start shooting
         Thread enemyThread = new Thread(){
             public void run(){
-                Enemy walt = new Enemy(currentFrame, true);
-                drawpane.add(walt);
-
+                int i = 0;
+                if(diff != 5) {
+                    while (player.getHealth() > 0) {
+                        if (i < diff) {
+                            Enemy walt = new Enemy(currentFrame, true);
+                            drawpane.add(walt);
+                            drawpane.repaint();
+                        }
+                        i++;
+                        try {
+                            Thread.sleep((i+1) * speed * 5000 / diff);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }else{
+                    while (player.getHealth() > 0) {
+                            Enemy walt = new Enemy(currentFrame, true);
+                            drawpane.add(walt);
+                            drawpane.repaint();
+                        try {
+                            Thread.sleep((i+1) * speed* 5000  / diff);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
             }
         };
-        enemyThread.run();
+        enemyThread.start();
     }
+
 
     public void movebutton(){
         Thread buttonmover = new Thread(){
@@ -92,6 +131,9 @@ public class MainApplication extends JFrame implements KeyListener {
     }
     public int getFrameWidth(){
         return frameWidth;
+    }
+    public int getSpeed(){
+        return speed;
     }
 
 
@@ -117,10 +159,19 @@ public class MainApplication extends JFrame implements KeyListener {
         }
         setVisible(true);
     }
-    public MainApplication(int frame, String pn, boolean sound, int difficulty){
+    public MainApplication(int frame, String pn, boolean sound, int difficulty, int speed){
         playername = pn;
         muted = sound;
         diff = difficulty;
+        this.speed = speed;
+        execution(frame);
+
+    }
+
+    public MainApplication(int frame, String pn, boolean sound){
+        playername = pn;
+        muted = sound;
+        diff = 2;
         execution(frame);
 
     }
@@ -197,14 +248,70 @@ public class MainApplication extends JFrame implements KeyListener {
                 }else if(item.compareToIgnoreCase("Walt ONLY") == 0){
                     diff = 5;
                 }else{
-                    diff = 0;
+                    diff = 3;
                 }
             }
         });
+        speedtoggle = new JToggleButton[5];
+        sgroup = new ButtonGroup();
+        speedtoggle[0] = new JRadioButton("Super Slow"); speedtoggle[0].setName("Super Slow");
+        speedtoggle[1] = new JRadioButton("Slow"); speedtoggle[1].setName("Slow");
+        speedtoggle[2] = new JRadioButton("Moderate"); speedtoggle[2].setName("Moderate");
+        speedtoggle[3] = new JRadioButton("Fast"); speedtoggle[3].setName("Fast");
+        speedtoggle[4] = new JRadioButton("SUPER SPEED"); speedtoggle[4].setName("SUPER SPEED");
+        speedtoggle[2].setSelected(true);
+
+        speedtoggle[0].addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if(e.getStateChange() == e.SELECTED){
+                    speed = 10;
+                }
+            }
+        });
+        speedtoggle[1].addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if(e.getStateChange() == e.SELECTED){
+                    speed = 7;
+                }
+            }
+        });
+        speedtoggle[2].addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if(e.getStateChange() == e.SELECTED){
+                    speed = 5;
+                }
+            }
+        });
+        speedtoggle[3].addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if(e.getStateChange() == e.SELECTED){
+                    speed = 4;
+                }
+            }
+        });
+        speedtoggle[4].addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if(e.getStateChange() == e.SELECTED){
+                    speed = 2;
+                }
+            }
+        });
+
+        for (int i = 0; i<5; i++){
+            sgroup.add(speedtoggle[i]);
+        }
         //control.add(new JLabel("Start Game: "));
         //control.add(startgame);
         control.add(new JLabel("Difficulty set : "));
         control.add(combo);
+        control.add(new JLabel("Speed Set : "));
+        control.add(speedtoggle[0]);control.add(speedtoggle[1]);control.add(speedtoggle[2]);control.add(speedtoggle[3]);control.add(speedtoggle[4]);
+        control.add(new JLabel("Sound toggle : "));
         control.add(soundtoggle[0]); control.add(soundtoggle[1]);
         contentpane.add(control, BorderLayout.NORTH);
         contentpane.add(drawpane, BorderLayout.CENTER);
@@ -236,67 +343,80 @@ public class MainApplication extends JFrame implements KeyListener {
             themeSound.playLoop();
         }
 
-        speedtoggle = new JToggleButton[5];
-        sgroup = new ButtonGroup();
-        speedtoggle[0] = new JRadioButton("Super Slow"); speedtoggle[0].setName("Super Slow");
-        speedtoggle[1] = new JRadioButton("Slow"); speedtoggle[1].setName("Slow");
-        speedtoggle[2] = new JRadioButton("Moderate"); speedtoggle[2].setName("Moderate");
-        speedtoggle[3] = new JRadioButton("Fast"); speedtoggle[3].setName("Fast");
-        speedtoggle[4] = new JRadioButton("SUPER SPEED"); speedtoggle[4].setName("SUPER SPEED");
-        speedtoggle[2].setSelected(true);
-
-        speedtoggle[0].addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                if(e.getStateChange() == e.SELECTED){
-
-                }
-            }
-        });
-        speedtoggle[1].addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                if(e.getStateChange() == e.SELECTED){
-
-                }
-            }
-        });
-        speedtoggle[2].addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                if(e.getStateChange() == e.SELECTED){
-
-                }
-            }
-        });
-        speedtoggle[3].addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                if(e.getStateChange() == e.SELECTED){
-
-                }
-            }
-        });
-        speedtoggle[4].addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                if(e.getStateChange() == e.SELECTED){
-
-                }
-            }
-        });
-
-        for (int i = 0; i<5; i++){
-            sgroup.add(speedtoggle[i]);
-        }
-
         JPanel control = new JPanel();
         control.setBounds(0,0, 1000, 50);
-        control.add(speedtoggle[0]);control.add(speedtoggle[1]);control.add(speedtoggle[2]);control.add(speedtoggle[3]);control.add(speedtoggle[4]);
+
+        soundtoggle = new JToggleButton[2];
+        bgroup = new ButtonGroup();
+        soundtoggle[0] = new JRadioButton("Mute"); soundtoggle[0].setName("Mute");
+        soundtoggle[1] = new JRadioButton("Unmute"); soundtoggle[1].setName("Unmute");
+        if(muted){
+            soundtoggle[0].setSelected(true);
+        }else{
+            soundtoggle[1].setSelected(true);
+        }
+
+        soundtoggle[0].addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if(e.getStateChange() == e.SELECTED){
+                    themeSound.stop();
+                    muted = true;
+                }
+            }
+        });
+        soundtoggle[1].addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if(e.getStateChange() == e.SELECTED){
+                    themeSound.playLoop();
+                    muted = false;
+                }
+            }
+        });
+
+        for (int i = 0; i<2; i++){
+            bgroup.add(soundtoggle[i]);
+        }
+
+
+        contentpane.add(new JLabel("Sound Toggle : "));
+        control.add(soundtoggle[0]); control.add(soundtoggle[1]);
         contentpane.add(control, BorderLayout.NORTH);
+        contentpane.add(drawpane, BorderLayout.CENTER);
         drawpane.add(player);
+        drawpane.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                setFocusable(true);
+                requestFocus();
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
+        });
+
+
         setEnemy();//generate enemy
         setBoss();//generate boss
+
 
         //implement mouselistener
     }
@@ -325,7 +445,7 @@ public class MainApplication extends JFrame implements KeyListener {
 
     public static void main(String [] args){
 
-        new MainApplication(0, null, false, 0);
+        new MainApplication(0, null, false);
     }
 
     @Override
@@ -393,13 +513,14 @@ class MyButton extends JLabel implements MouseListener {
         clicked = true;
         boolean muted = parentframe.isMuted();
         String curplay = parentframe.getPlayername();
+        int pfspeed = parentframe.getSpeed();
         int diff = parentframe.getDiff();
         try {
             parentframe.getrid();
         }catch (Exception error){
             error.printStackTrace();
         }
-        new MainApplication(1, curplay, muted, diff);
+        new MainApplication(1, curplay, muted, diff, pfspeed);
     }
 
     @Override
