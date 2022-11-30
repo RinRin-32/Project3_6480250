@@ -26,6 +26,7 @@ public class Enemy extends JLabel {
         waltBo = new ImageIcon(imageFiles[1]).resize(wWidth, wheight); //resize()
 
         //set sound
+        curY = 200;
 
 
         //setIcon(icon);

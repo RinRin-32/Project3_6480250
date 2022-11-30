@@ -30,6 +30,8 @@ public class MainApplication extends JFrame {
     private ImageIcon backgroundImg;
     private SoundEffect themeSound;
     private MainApplication currentFrame;
+
+    private MainProp player;
     private int frameWidth = 1280, frameHeight = 720;
 
     private String projectPath = "src/main/java/Project3_6480250";
@@ -64,6 +66,16 @@ public class MainApplication extends JFrame {
         };
         //update player score or smth
         enemyThread.start();
+    }
+    public void setBoss(){
+        Thread enemyThread = new Thread(){
+            public void run(){
+                Enemy walt = new Enemy(currentFrame, true);
+                drawpane.add(walt);
+                setCrashItem(walt);
+            }
+        };
+        enemyThread.run();
     }
     public void setCrashItem(Enemy e){
         //what if we generate the projectile around our enemy as a circle
@@ -216,6 +228,12 @@ public class MainApplication extends JFrame {
         //keyevent handling
         //5 jradiobutton (gameplay speed)
         //5 jlist (powerups)
+        backgroundImg  = new ImageIcon(resourcePath + "gamebackground.jpg").resize(frameWidth, frameHeight);
+        drawpane = new JLabel();
+        drawpane.setIcon(backgroundImg);
+        drawpane.setLayout(null);
+
+        this.add(drawpane);
         themeSound = new SoundEffect(resourcePath + "maingamesong.wav");
         if(!muted){
             themeSound.playLoop();
@@ -228,6 +246,48 @@ public class MainApplication extends JFrame {
         speedtoggle[2] = new JRadioButton("Moderate"); speedtoggle[2].setName("Moderate");
         speedtoggle[3] = new JRadioButton("Fast"); speedtoggle[3].setName("Fast");
         speedtoggle[4] = new JRadioButton("SUPER SPEED"); speedtoggle[4].setName("SUPER SPEED");
+        speedtoggle[2].setSelected(true);
+
+        speedtoggle[0].addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if(e.getStateChange() == e.SELECTED){
+
+                }
+            }
+        });
+        speedtoggle[1].addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if(e.getStateChange() == e.SELECTED){
+
+                }
+            }
+        });
+        speedtoggle[2].addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if(e.getStateChange() == e.SELECTED){
+
+                }
+            }
+        });
+        speedtoggle[3].addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if(e.getStateChange() == e.SELECTED){
+
+                }
+            }
+        });
+        speedtoggle[4].addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if(e.getStateChange() == e.SELECTED){
+
+                }
+            }
+        });
 
         for (int i = 0; i<5; i++){
             sgroup.add(speedtoggle[i]);
@@ -238,6 +298,11 @@ public class MainApplication extends JFrame {
         control.add(speedtoggle[0]);control.add(speedtoggle[1]);control.add(speedtoggle[2]);control.add(speedtoggle[3]);control.add(speedtoggle[4]);
 
         contentpane.add(control, BorderLayout.NORTH);
+        player = new MainProp(currentFrame);
+        drawpane.add(player);
+        //while(player.getHealth()>0){
+        //    setEnemy();
+        //}
 
 
     }
