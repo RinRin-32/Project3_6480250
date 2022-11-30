@@ -85,28 +85,30 @@ public class MainApplication extends JFrame implements KeyListener {
                 int i = 0;
                 if(diff != 5) {
                     while (player.getHealth() > 0) {
+                        try {
+                            Thread.sleep((i+1) * speed * 5000 / diff);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
                         if (i < diff) {
                             Enemy walt = new Enemy(currentFrame, true);
                             drawpane.add(walt);
                             drawpane.repaint();
                         }
                         i++;
+
+                    }
+                }else{
+                    while (player.getHealth() > 0) {
                         try {
                             Thread.sleep((i+1) * speed * 5000 / diff);
                         } catch (InterruptedException e) {
                             throw new RuntimeException(e);
                         }
-                    }
-                }else{
-                    while (player.getHealth() > 0) {
-                            Enemy walt = new Enemy(currentFrame, true);
-                            drawpane.add(walt);
-                            drawpane.repaint();
-                        try {
-                            Thread.sleep((i+1) * speed* 5000  / diff);
-                        } catch (InterruptedException e) {
-                            throw new RuntimeException(e);
-                        }
+                        Enemy walt = new Enemy(currentFrame, true);
+                        drawpane.add(walt);
+                        drawpane.repaint();
+
                     }
                 }
             }
@@ -378,10 +380,28 @@ public class MainApplication extends JFrame implements KeyListener {
         for (int i = 0; i<2; i++){
             bgroup.add(soundtoggle[i]);
         }
+        JButton restart = new JButton("Restart");
+        restart.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                currentFrame.getrid();
+                new MainApplication(1, currentFrame.getPlayername(), muted, diff, speed);
+            }
+        });
 
+        JButton newgame = new JButton("New Game");
+        newgame.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                currentFrame.getrid();
+                new MainApplication(0, null, false);
+            }
+        });
 
         contentpane.add(new JLabel("Sound Toggle : "));
         control.add(soundtoggle[0]); control.add(soundtoggle[1]);
+        control.add(restart);
+        control.add(newgame);
         contentpane.add(control, BorderLayout.NORTH);
         contentpane.add(drawpane, BorderLayout.CENTER);
         drawpane.add(player);
@@ -393,7 +413,8 @@ public class MainApplication extends JFrame implements KeyListener {
 
             @Override
             public void mousePressed(MouseEvent e) {
-
+                //call method that shoot
+                //shoot is a thread so it move the location of the projectile
             }
 
             @Override
