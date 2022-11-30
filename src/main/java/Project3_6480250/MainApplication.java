@@ -52,14 +52,15 @@ public class MainApplication extends JFrame implements KeyListener {
         mainPropThread.start();
     }
 
+    public JLabel getDrawpane() {
+        return drawpane;
+    }
+
     public void setEnemy(){
         Thread enemyThread = new Thread(){
             public void run(){
                 Enemy enemy = new Enemy(currentFrame, false);
                 drawpane.add(enemy);
-                //while enemy isn't dead do something
-
-                setCrashItem(enemy);//creates enemy's projectile
             }
         };
         //update player score or smth
@@ -70,23 +71,12 @@ public class MainApplication extends JFrame implements KeyListener {
             public void run(){
                 Enemy walt = new Enemy(currentFrame, true);
                 drawpane.add(walt);
-                setCrashItem(walt);
+
             }
         };
         enemyThread.run();
     }
-    public void setCrashItem(Enemy e){
-        //what if we generate the projectile around our enemy as a circle
-        Thread crashThread = new Thread(){
-            public void run(){
-                CrashItems item = new CrashItems(currentFrame, e);
-                drawpane.add(item);
-                //do smth in while loop
-            }
-        };
-        //update playerhp
-        crashThread.start();
-    }
+
     public void movebutton(){
         Thread buttonmover = new Thread(){
             public void run(){
@@ -350,7 +340,6 @@ public class MainApplication extends JFrame implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        System.out.println("is this working?");
         player.moving(e.getKeyCode());
     }
 

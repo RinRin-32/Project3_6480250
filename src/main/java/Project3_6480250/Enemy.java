@@ -53,8 +53,20 @@ public class Enemy extends JLabel {
         //make enemy move across the screen from the top
     }
 
+    public void setCrashItem(Enemy e){
+        Thread crashThread = new Thread(){
+            public void run(){
+                CrashItems item = new CrashItems(parentFrame, e);
+                parentFrame.getDrawpane().add(item);
+                //do smth in while loop
+            }
+        };
+        //update playerhp
+        crashThread.start();
+    }
 
     public void shoot(){
+
         shootSound.playOnce();
     }
     public synchronized void gotHit(int n){
