@@ -20,8 +20,8 @@ public class MainApplication extends JFrame {
     private JPanel contentpane;
     private JLabel drawpane;
     private JComboBox combo;
-    private JToggleButton []soundtoggle;
-    private ButtonGroup bgroup;
+    private JToggleButton [] soundtoggle, speedtoggle;
+    private ButtonGroup bgroup, sgroup;
 
     private MyButton button;
     private JButton setname;
@@ -220,6 +220,24 @@ public class MainApplication extends JFrame {
         if(!muted){
             themeSound.playLoop();
         }
+
+        speedtoggle = new JToggleButton[5];
+        sgroup = new ButtonGroup();
+        speedtoggle[0] = new JRadioButton("Super Slow"); speedtoggle[0].setName("Super Slow");
+        speedtoggle[1] = new JRadioButton("Slow"); speedtoggle[1].setName("Slow");
+        speedtoggle[2] = new JRadioButton("Moderate"); speedtoggle[2].setName("Moderate");
+        speedtoggle[3] = new JRadioButton("Fast"); speedtoggle[3].setName("Fast");
+        speedtoggle[4] = new JRadioButton("SUPER SPEED"); speedtoggle[4].setName("SUPER SPEED");
+
+        for (int i = 0; i<5; i++){
+            sgroup.add(speedtoggle[i]);
+        }
+
+        JPanel control = new JPanel();
+        control.setBounds(0,0, 1000, 50);
+        control.add(speedtoggle[0]);control.add(speedtoggle[1]);control.add(speedtoggle[2]);control.add(speedtoggle[3]);control.add(speedtoggle[4]);
+
+        contentpane.add(control, BorderLayout.NORTH);
 
 
     }
