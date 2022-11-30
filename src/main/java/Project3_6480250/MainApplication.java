@@ -24,7 +24,7 @@ public class MainApplication extends JFrame implements KeyListener {
     private ButtonGroup bgroup, sgroup;
 
     private MyButton button;
-    private JButton setname;
+    private JButton setname, goDeath;
     private JTextField text;
     private ImageIcon backgroundImg;
     private SoundEffect themeSound;
@@ -226,12 +226,27 @@ public class MainApplication extends JFrame implements KeyListener {
             }
         });
 
+        //Death Screen Test
+        goDeath = new JButton("Go Death");
+        goDeath.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    getrid();
+                }catch (Exception error){
+                    error.printStackTrace();
+                }
+                new MainApplication(2, null, false);
+            }
+        });
+
 
         JPanel control = new JPanel();
         control.setBounds(0,0, 1000, 50);
         control.add(new JLabel("Player's name :" ));
         control.add(text);
         control.add(setname);
+        control.add(goDeath);
         String [] difficulty = {"Jesse Easy","Easy", "Medium", "Hard", "Walt ONLY"};
         combo = new JComboBox(difficulty);
         combo.setSelectedIndex(1);
@@ -317,7 +332,7 @@ public class MainApplication extends JFrame implements KeyListener {
         control.add(soundtoggle[0]); control.add(soundtoggle[1]);
         contentpane.add(control, BorderLayout.NORTH);
         contentpane.add(drawpane, BorderLayout.CENTER);
-        button = new MyButton(this);
+        button = new MyButton(this, true);
         movebutton();
         drawpane.add(button);
 
@@ -447,6 +462,17 @@ public class MainApplication extends JFrame implements KeyListener {
         //backgroundImg = new ImageIcon();//maingameplay backgroudn
         //drawpane.setIcon(frame2.backgroundImg);
 
+        backgroundImg  = new ImageIcon(resourcePath + "deathScreen.jpg").resize(frameWidth, frameHeight);
+        drawpane = new JLabel();
+        drawpane.setIcon(backgroundImg);
+        drawpane.setLayout(null);
+        drawpane.setVisible(true);
+        themeSound = new SoundEffect(resourcePath + "deathsong.wav"); themeSound.playLoop();
+        this.add(drawpane);
+        button = new MyButton(this, false);
+        drawpane.add(button);
+
+
         //add listeners for gameplays
 
     }
@@ -513,19 +539,28 @@ class SoundEffect{
 }
 
 class MyButton extends JLabel implements MouseListener {
-    private ImageIcon button;
+    private ImageIcon Sbutton, Rbutton;
     private MainApplication parentframe;
-    private String image = "src/main/java/Project3_6480250/resources/suebutton.png";
+    private String [] image = {"src/main/java/Project3_6480250/resources/suebutton.png", "src/main/java/Project3_6480250/resources/RestartButton.png"};
     private int width = 466, height = 399;
     private int curX = 400, curY = 200;
     private int speed = 700;
-    private boolean clicked = false, isNull = false;
+    private boolean clicked = false, isNull = false, restart = false;
 
-    public MyButton(MainApplication pf){
+    public MyButton(MainApplication pf, boolean start){
         parentframe = pf;
-        button = new ImageIcon(image).resize(width,height);
-        setIcon(button);
+
+        if(start){
+            Sbutton = new ImageIcon(image[0]).resize(width,height);
+            setIcon(Sbutton);
+            restart = false;
+        } else {
+            Rbutton = new ImageIcon(image[1]).resize(width,height);
+            setIcon(Rbutton);
+            restart = true;
+        }
         setBounds(curX, curY, width, height);
+
         addMouseListener(this);
     }
 
@@ -541,7 +576,12 @@ class MyButton extends JLabel implements MouseListener {
         }catch (Exception error){
             error.printStackTrace();
         }
-        new MainApplication(1, curplay, muted, diff, pfspeed);
+        if(!restart){
+            new MainApplication(1, curplay, muted, diff, pfspeed);
+        } else {
+            new MainApplication(0, null, false);
+        }
+
     }
 
     @Override
@@ -568,7 +608,7 @@ class MyButton extends JLabel implements MouseListener {
     }
     public void blink(){
         if(isNull){
-            setIcon(button);
+            setIcon(Sbutton);
             isNull = false;
         }else{
             setIcon(null);
