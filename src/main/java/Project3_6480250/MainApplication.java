@@ -15,7 +15,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class MainApplication extends JFrame {
+public class MainApplication extends JFrame implements KeyListener {
 
     private JPanel contentpane;
     private JLabel drawpane;
@@ -26,14 +26,12 @@ public class MainApplication extends JFrame {
     private MyButton button;
     private JButton setname;
     private JTextField text;
-    private MainProp gus;
     private ImageIcon backgroundImg;
     private SoundEffect themeSound;
     private MainApplication currentFrame;
 
-    private MainProp player;
+    private MainProp player = new MainProp(this);
     private int frameWidth = 1280, frameHeight = 720;
-
     private String projectPath = "src/main/java/Project3_6480250";
     private String resourcePath = projectPath + "/resources/";
     private String playername;
@@ -98,6 +96,13 @@ public class MainApplication extends JFrame {
             }
         };
         buttonmover.start();
+    }
+
+    public int getFrameHeight(){
+        return frameHeight;
+    }
+    public int getFrameWidth(){
+        return frameWidth;
     }
 
 
@@ -184,7 +189,7 @@ public class MainApplication extends JFrame {
         control.add(new JLabel("Player's name :" ));
         control.add(text);
         control.add(setname);
-        String [] difficulty = {"Jesse","Easy", "Medium", "Hard", "Walt you Sussy Baka"};
+        String [] difficulty = {"Jesse Easy","Easy", "Medium", "Hard", "Walt ONLY"};
         combo = new JComboBox(difficulty);
         combo.setSelectedIndex(1);
         combo.addItemListener(new ItemListener() {
@@ -228,6 +233,9 @@ public class MainApplication extends JFrame {
         //keyevent handling
         //5 jradiobutton (gameplay speed)
         //5 jlist (powerups)
+        setFocusable(true);
+        requestFocus();
+        this.addKeyListener(this);
         backgroundImg  = new ImageIcon(resourcePath + "gamebackground.jpg").resize(frameWidth, frameHeight);
         drawpane = new JLabel();
         drawpane.setIcon(backgroundImg);
@@ -298,8 +306,9 @@ public class MainApplication extends JFrame {
         control.add(speedtoggle[0]);control.add(speedtoggle[1]);control.add(speedtoggle[2]);control.add(speedtoggle[3]);control.add(speedtoggle[4]);
 
         contentpane.add(control, BorderLayout.NORTH);
-        player = new MainProp(currentFrame);
+
         drawpane.add(player);
+
         //while(player.getHealth()>0){
         //    setEnemy();
         //}
@@ -332,6 +341,22 @@ public class MainApplication extends JFrame {
     public static void main(String [] args){
 
         new MainApplication(0, null, false);
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        System.out.println("is this working?");
+        player.moving(e.getKeyCode());
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+
     }
 }
 

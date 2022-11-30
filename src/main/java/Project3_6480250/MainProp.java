@@ -6,7 +6,7 @@ import javax.swing.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-public class MainProp extends JLabel implements KeyListener {
+public class MainProp extends JLabel {
     private ImageIcon goodmanFace;
     private MainApplication parentFrame;
     private String imageFiles = "src/main/java/Project3_6480250/resources/goodman.png";//haven't added image yet
@@ -25,7 +25,6 @@ public class MainProp extends JLabel implements KeyListener {
 
         //setIcon(icon);
         setBounds(curX, curY, width, height);
-        addKeyListener();
     }
     public void setSpeed(int s) { speed = s;}
     public void setWalk(boolean w) {walk = w;}
@@ -53,29 +52,31 @@ public class MainProp extends JLabel implements KeyListener {
 
     public int getHealth(){ return hp;}
 
-    @Override
-    public void keyTyped(KeyEvent e) {
-        if (e.getKeyChar() == 'w'){
-            curY = curY + 50;
-        }else if (e.getKeyChar() == 's'){
-            curY = curY - 50;
-        }else if (e.getKeyChar() == 'a'){
-            curX = curX - 50;
-        }else if (e.getKeyChar() == 'd'){
-            curX = curX + 50;
+
+
+
+
+    public void moving(int e) {
+        int upvalue = this.getY();
+        int rightvalue = this.getX();
+
+        if (e == 87){ //w
+            if (this.getY() > -1) {
+                upvalue -= 50;
+            }
+        }else if (e == 83){ //s
+            if(this.getY() < parentFrame.getFrameHeight()-200){
+                upvalue += 50;
+            }
+        }else if (e == 65){ //a
+            if(this.getX() > -1){
+                rightvalue -= 50;
+            }
+        }else if (e == 68){ //d
+            if(this.getX() < parentFrame.getFrameWidth()-100){
+                rightvalue += 50;
+            }
         }
-        if ()
-    }
-
-    }
-
-    @Override
-    public void keyPressed(KeyEvent e) {
-
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
-
+        this.setLocation(rightvalue,upvalue);
     }
 }

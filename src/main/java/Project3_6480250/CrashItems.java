@@ -18,6 +18,8 @@ public class CrashItems extends JLabel {
     private int width = 90, height = 90;
     private int curX, curY;
     private int speed = 500; //set sleep time, editable
+
+    private int shootspeed = 0;
     private int damage;
 
     public CrashItems(MainApplication pf, Enemy e){
@@ -49,6 +51,10 @@ public class CrashItems extends JLabel {
         setIcon(itemImg);
         curX = m.getX(); curY = m.getY()-50;
         setBounds(curX,curY,width, height);
+    }
+
+    public void setShootspeed(int shootspeed) {
+        this.shootspeed = shootspeed;
     }
 
     public void movedown() throws InterruptedException {
