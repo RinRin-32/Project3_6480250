@@ -12,8 +12,6 @@ public class MainProp extends JLabel {
     private int curX = 640, curY = 360; //has to set location here
     private boolean walk = false, up = true;
     private int speed;//sleep duration
-    //set default values like facing left or right and or movement
-
     private int hp = 40;
 
     public MainProp(MainApplication pf){

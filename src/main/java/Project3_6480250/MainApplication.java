@@ -36,7 +36,7 @@ public class MainApplication extends JFrame {
     private String resourcePath = projectPath + "/resources/";
     private String playername;
 
-    private int score = 0;
+    private int score = 0; private boolean muted = false;
 
     public String getPlayername(){
         return playername;
@@ -91,7 +91,6 @@ public class MainApplication extends JFrame {
 
     public void execution(int n){
         //main part of the application
-            // call frame 2 once a button is pressed on frameone frametwo();
         setSize(frameWidth+1000, frameHeight+50);
         setBounds(275, 200, frameWidth, frameHeight);
         setResizable(false);
@@ -112,9 +111,11 @@ public class MainApplication extends JFrame {
         }
         setVisible(true);
     }
-    public MainApplication(int frame, String pn){
-        execution(frame);
+    public MainApplication(int frame, String pn, boolean sound){
         playername = pn;
+        muted = sound;
+        execution(frame);
+
     }
 
     public void frameone() {
@@ -126,15 +127,6 @@ public class MainApplication extends JFrame {
         drawpane.setVisible(true);
         //drawpane.repaint();
         this.add(drawpane);
-        /*
-        startgame = new JButton("Start Game");
-        startgame.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                themeSound.stop();
-                frametwo();
-            }
-        });*/
         text = new JTextField("Saul", 5);
         text.setEditable(true);
         soundtoggle = new JToggleButton[2];
@@ -148,6 +140,7 @@ public class MainApplication extends JFrame {
             public void itemStateChanged(ItemEvent e) {
                 if(e.getStateChange() == e.SELECTED){
                     themeSound.stop();
+                    muted = true;
                 }
             }
         });
@@ -156,6 +149,7 @@ public class MainApplication extends JFrame {
             public void itemStateChanged(ItemEvent e) {
                 if(e.getStateChange() == e.SELECTED){
                     themeSound.playLoop();
+                    muted = false;
                 }
             }
         });
@@ -172,12 +166,13 @@ public class MainApplication extends JFrame {
             }
         });
 
+
         JPanel control = new JPanel();
         control.setBounds(0,0, 1000, 50);
         control.add(new JLabel("Player's name :" ));
         control.add(text);
         control.add(setname);
-        String [] difficulty = {"easy", "medium", "slow"};
+        String [] difficulty = {"Jesse","Easy", "Medium", "Hard", "Walt you Sussy Baka"};
         combo = new JComboBox(difficulty);
         combo.setSelectedIndex(1);
         combo.addItemListener(new ItemListener() {
@@ -199,17 +194,6 @@ public class MainApplication extends JFrame {
         drawpane.add(button);
 
         this.repaint();
-
-
-
-
-        //add listeners for interactives, difficuulty settings
-
-
-
-
-
-
         validate();
 
         /// no need for these now///
@@ -229,8 +213,13 @@ public class MainApplication extends JFrame {
         //add listeners for gameplays
 
         //text.setEditable(false);
-
-        themeSound = new SoundEffect(resourcePath + "maingamesong.wav"); themeSound.playLoop();
+        //keyevent handling
+        //5 jradiobutton (gameplay speed)
+        //5 jlist (powerups)
+        themeSound = new SoundEffect(resourcePath + "maingamesong.wav");
+        if(!muted){
+            themeSound.playLoop();
+        }
 
 
     }
@@ -247,6 +236,9 @@ public class MainApplication extends JFrame {
         themeSound.stop();
         this.dispose();
     }
+    public boolean isMuted(){
+        return muted;
+    }
 
 
 
@@ -256,7 +248,7 @@ public class MainApplication extends JFrame {
 
     public static void main(String [] args){
 
-        new MainApplication(0, null);
+        new MainApplication(0, null, false);
     }
 }
 
@@ -307,13 +299,14 @@ class MyButton extends JLabel implements MouseListener {
     @Override
     public void mouseClicked(MouseEvent e) {
         clicked = true;
+        boolean muted = parentframe.isMuted();
         String curplay = parentframe.getPlayername();
         try {
             parentframe.getrid();
         }catch (Exception error){
             error.printStackTrace();
         }
-        new MainApplication(1, curplay);
+        new MainApplication(1, curplay, muted);
     }
 
     @Override
