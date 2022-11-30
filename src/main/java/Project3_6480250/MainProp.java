@@ -15,8 +15,10 @@ public class MainProp extends JLabel {
     private boolean walk = false, up = true;
     private int speed;//sleep duration
     private int hp = 40;
+    private MainProp thisprop;
 
     public MainProp(MainApplication pf){
+        thisprop = this;
         parentFrame = pf;
         goodmanFace = new ImageIcon((imageFiles)).resize(width, height);
         //set images here
@@ -52,7 +54,21 @@ public class MainProp extends JLabel {
 
     public int getHealth(){ return hp;}
 
-
+    public void shoot(){
+        Thread shoot = new Thread(){
+            public void run(){
+                CrashItems item = new CrashItems(parentFrame, thisprop);
+                item.setShootspeed(speed);
+                parentFrame.getDrawpane().add(item);
+                try {
+                    item.moveup();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        };
+        shoot.start();
+    }
 
 
 

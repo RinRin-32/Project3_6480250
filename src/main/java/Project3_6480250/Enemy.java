@@ -14,10 +14,12 @@ public class Enemy extends JLabel {
     private int jwidth = 250, jheight = 359, wWidth = 500, wheight = 418;//has to set size here
     private int curX, curY = 0; //has to set location here
     private int speed = 500; //set sleep time, editable
+    private Enemy thisene;
 
     private SoundEffect   shootSound;
 
     public Enemy(MainApplication pf, boolean mobselect){
+        thisene = this;
         parentFrame = pf;
 
         curX = (int)(Math.random() * 5555) % (parentFrame.getWidth()-100);
@@ -53,12 +55,17 @@ public class Enemy extends JLabel {
         //make enemy move across the screen from the top
     }
 
-    public void setCrashItem(Enemy e){
+    public void setCrashItem(){
         Thread crashThread = new Thread(){
             public void run(){
-                CrashItems item = new CrashItems(parentFrame, e);
+                CrashItems item = new CrashItems(parentFrame, thisene);
+                item.setShootspeed(speed);
                 parentFrame.getDrawpane().add(item);
-                //do smth in while loop
+                try {
+                    item.movedown();
+                } catch (InterruptedException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         };
         //update playerhp

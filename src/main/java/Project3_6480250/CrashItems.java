@@ -62,6 +62,12 @@ public class CrashItems extends JLabel {
         Thread.sleep(speed);
     }
 
+   public void moveup() throws InterruptedException{
+        setLocation(getX(), getY()-20);
+        Thread.sleep(speed);
+   }
+
+
     public void playHitSound() { hitSound.playOnce();}
 
     public int getDamage () {return damage;} //for something like getting the crashitems damage then using it to subtract hitpoints?

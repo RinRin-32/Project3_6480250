@@ -36,27 +36,23 @@ public class MainApplication extends JFrame implements KeyListener {
     private String resourcePath = projectPath + "/resources/";
     private String playername;
 
-    private int score = 0; private boolean muted = false;
+    private int score = 0; private boolean muted = false; private int diff;
 
     public String getPlayername(){
         return playername;
     }
 
-    public void setMainProp(){
-
-        Thread mainPropThread = new Thread(){
-            public void run(){
-                //do smth with while loop here
-            }
-        };
-        mainPropThread.start();
-    }
 
     public JLabel getDrawpane() {
         return drawpane;
     }
-
+    public int getDiff(){
+        return diff;
+    }
     public void setEnemy(){
+        //spawn enemy with the rate of diff
+        //not implemented yet
+        //once created the enemy automatically start shooting
         Thread enemyThread = new Thread(){
             public void run(){
                 Enemy enemy = new Enemy(currentFrame, false);
@@ -67,6 +63,9 @@ public class MainApplication extends JFrame implements KeyListener {
         enemyThread.start();
     }
     public void setBoss(){
+        //spawn boss with the rate of diff
+        //not yet implemented
+        //once created the enemy automatically start shooting
         Thread enemyThread = new Thread(){
             public void run(){
                 Enemy walt = new Enemy(currentFrame, true);
@@ -118,9 +117,10 @@ public class MainApplication extends JFrame implements KeyListener {
         }
         setVisible(true);
     }
-    public MainApplication(int frame, String pn, boolean sound){
+    public MainApplication(int frame, String pn, boolean sound, int difficulty){
         playername = pn;
         muted = sound;
+        diff = difficulty;
         execution(frame);
 
     }
@@ -186,7 +186,19 @@ public class MainApplication extends JFrame implements KeyListener {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 String item = "" + e.getItem();
-                //if(item.compareToIgnoreCase("smth"))
+                if(item.compareToIgnoreCase("Jesse Easy") == 0){
+                    diff = 1;
+                }else if(item.compareToIgnoreCase("Easy") == 0){
+                    diff = 2;
+                }else if(item.compareToIgnoreCase("Medium") ==0){
+                    diff = 3;
+                }else if(item.compareToIgnoreCase("Hard")==0){
+                    diff = 4;
+                }else if(item.compareToIgnoreCase("Walt ONLY") == 0){
+                    diff = 5;
+                }else{
+                    diff = 0;
+                }
             }
         });
         //control.add(new JLabel("Start Game: "));
@@ -202,24 +214,11 @@ public class MainApplication extends JFrame implements KeyListener {
 
         this.repaint();
         validate();
-
-        /// no need for these now///
-        //this.setVisible(false);
-        //this.dispose(); //for closing this jframe
-        //MainApplication frame2 = new MainApplication(1); //for making gameplay
-        //MainApplication death = new MainApplication(2); //for making death screen
-        /// no need for these now///
     }
 
     public void frametwo(){
         //the frame with actual game
         //when player hp == 0 go to death screen
-        //backgroundImg = new ImageIcon();//maingameplay backgroudn
-        //drawpane.setIcon(frame2.backgroundImg);
-
-        //add listeners for gameplays
-
-        //text.setEditable(false);
         //keyevent handling
         //5 jradiobutton (gameplay speed)
         //5 jlist (powerups)
@@ -294,16 +293,12 @@ public class MainApplication extends JFrame implements KeyListener {
         JPanel control = new JPanel();
         control.setBounds(0,0, 1000, 50);
         control.add(speedtoggle[0]);control.add(speedtoggle[1]);control.add(speedtoggle[2]);control.add(speedtoggle[3]);control.add(speedtoggle[4]);
-
         contentpane.add(control, BorderLayout.NORTH);
-
         drawpane.add(player);
+        setEnemy();//generate enemy
+        setBoss();//generate boss
 
-        //while(player.getHealth()>0){
-        //    setEnemy();
-        //}
-
-
+        //implement mouselistener
     }
     public void deathScreen(){
         //the frame with actual game
@@ -330,7 +325,7 @@ public class MainApplication extends JFrame implements KeyListener {
 
     public static void main(String [] args){
 
-        new MainApplication(0, null, false);
+        new MainApplication(0, null, false, 0);
     }
 
     @Override
@@ -398,12 +393,13 @@ class MyButton extends JLabel implements MouseListener {
         clicked = true;
         boolean muted = parentframe.isMuted();
         String curplay = parentframe.getPlayername();
+        int diff = parentframe.getDiff();
         try {
             parentframe.getrid();
         }catch (Exception error){
             error.printStackTrace();
         }
-        new MainApplication(1, curplay, muted);
+        new MainApplication(1, curplay, muted, diff);
     }
 
     @Override
