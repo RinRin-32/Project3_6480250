@@ -12,6 +12,8 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.*;
 
@@ -122,6 +124,9 @@ public class MainApplication extends JFrame implements KeyListener {
             public void run(){
                 while(!button.isClicked()) {
                     button.blink();
+                    if(button.isClicked()){
+                        break;
+                    }
                 }
             }
         };
@@ -188,6 +193,9 @@ public class MainApplication extends JFrame implements KeyListener {
         //drawpane.repaint();
         this.add(drawpane);
         text = new JTextField("Saul", 5);
+        if(playername!=null){
+            text.setText(playername);
+        }
         text.setEditable(true);
         soundtoggle = new JToggleButton[2];
         bgroup = new ButtonGroup();
@@ -226,6 +234,7 @@ public class MainApplication extends JFrame implements KeyListener {
             }
         });
 
+        /*
         //Death Screen Test
         goDeath = new JButton("Go Death");
         goDeath.addActionListener(new ActionListener() {
@@ -239,6 +248,7 @@ public class MainApplication extends JFrame implements KeyListener {
                 new MainApplication(2, null, false);
             }
         });
+        */
 
 
         JPanel control = new JPanel();
@@ -246,7 +256,9 @@ public class MainApplication extends JFrame implements KeyListener {
         control.add(new JLabel("Player's name :" ));
         control.add(text);
         control.add(setname);
-        control.add(goDeath);
+
+        //control.add(goDeath);
+
         String [] difficulty = {"Jesse Easy","Easy", "Medium", "Hard", "Walt ONLY"};
         combo = new JComboBox(difficulty);
         combo.setSelectedIndex(1);
@@ -409,7 +421,7 @@ public class MainApplication extends JFrame implements KeyListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 currentFrame.getrid();
-                new MainApplication(0, null, false);
+                new MainApplication(0, playername, muted);
             }
         });
 
@@ -417,6 +429,46 @@ public class MainApplication extends JFrame implements KeyListener {
         control.add(soundtoggle[0]); control.add(soundtoggle[1]);
         control.add(restart);
         control.add(newgame);
+
+        DefaultListModel<String> powerups = new DefaultListModel<>();
+        powerups.addElement("Rebuttal");
+        powerups.addElement("Lawsuit Hell Rain");
+        powerups.addElement("Saul Badman");
+        powerups.addElement("No YOU!");
+        powerups.addElement("MEMES");
+
+        JList<String> power = new JList<>(powerups);
+        JList jlistselected;
+        power.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+        power.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if(power.getSelectedValue().compareTo("Rebuttal")==0){
+
+                }
+                if(power.getSelectedValue().compareTo("Lawsuit Hell Rain")==0){
+
+                }
+                if(power.getSelectedValue().compareTo("Saul Badman")==0){
+
+                }
+                if(power.getSelectedValue().compareTo("No YOU!")==0){
+
+                }
+                if(power.getSelectedValue().compareTo("MEMES")==0){
+                    try{
+                        currentFrame.getrid();
+                    }catch (Exception error){
+                        error.printStackTrace();
+                    }
+                    new MainApplication(2, playername, muted);
+                }
+            }
+        });
+
+        control.add(power);
+
         contentpane.add(control, BorderLayout.NORTH);
         contentpane.add(drawpane, BorderLayout.CENTER);
         drawpane.add(player);
@@ -468,6 +520,9 @@ public class MainApplication extends JFrame implements KeyListener {
         drawpane.setLayout(null);
         drawpane.setVisible(true);
         themeSound = new SoundEffect(resourcePath + "deathsong.wav"); themeSound.playLoop();
+        if(muted){
+            themeSound.stop();
+        }
         this.add(drawpane);
         button = new MyButton(this, false);
         drawpane.add(button);
