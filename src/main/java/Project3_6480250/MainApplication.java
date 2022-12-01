@@ -38,7 +38,7 @@ public class MainApplication extends JFrame implements KeyListener {
     private String resourcePath = projectPath + "/resources/";
     private String playername;
 
-    private static int score; private boolean muted = false; private int diff, speed;
+    private static int score; private boolean muted = false, kill = false; private int diff, speed;
 
     public String getPlayername(){
         return playername;
@@ -59,7 +59,7 @@ public class MainApplication extends JFrame implements KeyListener {
             public void run(){
                 int i = 0;
                 if(diff != 5) {
-                    while (player.getHealth() > 0) {
+                    while (player.getHealth() > 0&&!kill) {
                         if (i < 5) {
                             Enemy enemy = new Enemy(currentFrame, false);
                             drawpane.add(enemy);
@@ -86,7 +86,7 @@ public class MainApplication extends JFrame implements KeyListener {
             public void run(){
                 int i = 0;
                 if(diff != 5) {
-                    while (player.getHealth() > 0) {
+                    while (player.getHealth() > 0&&!kill) {
                         try {
                             Thread.sleep((i+1) * speed * 5000 / diff);
                         } catch (InterruptedException e) {
@@ -101,7 +101,7 @@ public class MainApplication extends JFrame implements KeyListener {
 
                     }
                 }else{
-                    while (player.getHealth() > 0) {
+                    while (player.getHealth() > 0&&!kill) {
                         try {
                             Thread.sleep((i+1) * speed * 5000 / diff);
                         } catch (InterruptedException e) {
@@ -554,6 +554,7 @@ public class MainApplication extends JFrame implements KeyListener {
     }
     public void getrid(){
         themeSound.stop();
+        kill = true;
         this.dispose();
     }
     public boolean isMuted(){
