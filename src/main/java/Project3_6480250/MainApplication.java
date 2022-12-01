@@ -208,6 +208,8 @@ public class MainApplication extends JFrame implements KeyListener {
         text = new JTextField("Saul", 5);
         if(playername!=null){
             text.setText(playername);
+        }else{
+            playername = "Saul";
         }
         text.setEditable(true);
         soundtoggle = new JToggleButton[2];
