@@ -510,7 +510,7 @@ public class MainApplication extends JFrame implements KeyListener {
 
             @Override
             public void mouseExited(MouseEvent e) {
-
+                //pause the game
             }
         });
 
