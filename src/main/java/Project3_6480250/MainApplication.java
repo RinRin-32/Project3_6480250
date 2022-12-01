@@ -38,7 +38,7 @@ public class MainApplication extends JFrame implements KeyListener {
     private String resourcePath = projectPath + "/resources/";
     private String playername;
 
-    private int score = 0; private boolean muted = false; private int diff, speed;
+    private static int score; private boolean muted = false; private int diff, speed;
 
     public String getPlayername(){
         return playername;
@@ -154,6 +154,18 @@ public class MainApplication extends JFrame implements KeyListener {
 
         contentpane = (JPanel) getContentPane();
         contentpane.setLayout(new BorderLayout());
+
+        addWindowListener(new WindowAdapter(){
+            public void windowClosing(WindowEvent e){
+                super.windowClosing(e);
+                currentFrame.getrid();
+                String output = "Total score = " + score +"\nGame by: \n" +"Burin, Intachuen, 6480250\n" +
+                        "Mhadhanagul, Charoenphon, 6381199\n" +
+                        "Tanakorn, Mankhetwit, 6480282\n" +
+                        "Sittipoj, Techathaicharoen, 6380361";
+                JOptionPane.showMessageDialog(null, output, "Thank you for playing our game " + playername, JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
         if(n == 1){
             setTitle("gameplay");
             frametwo();
@@ -179,6 +191,7 @@ public class MainApplication extends JFrame implements KeyListener {
         playername = pn;
         muted = sound;
         diff = 2;
+        score = 0;
         execution(frame);
 
     }
