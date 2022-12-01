@@ -470,6 +470,11 @@ public class MainApplication extends JFrame implements KeyListener {
                 }
                 if(power.getSelectedValue().compareTo("No YOU!")==0){
 
+                    /*
+                    for removing powerups during cool downs
+                    control.remove(power);
+                    repaint();
+                     */
                 }
                 if(power.getSelectedValue().compareTo("MEMES")==0){
                     try{
@@ -478,6 +483,7 @@ public class MainApplication extends JFrame implements KeyListener {
                         error.printStackTrace();
                     }
                     new MainApplication(2, playername, muted);
+
                 }
             }
         });
