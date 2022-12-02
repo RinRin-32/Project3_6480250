@@ -81,7 +81,6 @@ public class MainApplication extends JFrame implements KeyListener {
                             }else{
                                 score += 5;
                             }
-                            //allenemy.remove(i);
                             repaint();
                         }
                     }
@@ -118,7 +117,10 @@ public class MainApplication extends JFrame implements KeyListener {
                   Thread moveprojectile = new Thread(){
                       public void run(){
                           while(projectile.getY()< currentFrame.getFrameHeight() && !kill && player.getHealth() != 0 ) {
-                              projectile.getrid();
+                              if(enemy.getHealth() <= 0){
+                                  projectile.disappear();
+                                  drawpane.remove(projectile);
+                              }
                               drawpane.repaint();
                               try {
                                   projectile.movedown();
@@ -127,7 +129,7 @@ public class MainApplication extends JFrame implements KeyListener {
                               }
                               if(player.getBounds().intersects(projectile.getBounds())){
                                   score -= 2;
-                                  player.updateHP();
+                                  player.updateHP(projectile.damage());
                                   text.setText(Integer.toString(player.getHealth()));
                                   projectile.crashItemHit();
                                   projectile.disappear();
@@ -160,6 +162,9 @@ public class MainApplication extends JFrame implements KeyListener {
     public int getDiff(){
         return diff;
     }
+    public int getScore(){
+        return score;
+    }
     public void setEnemy(){
         //spawn enemy with the rate of diff
         //not implemented yet
@@ -186,7 +191,6 @@ public class MainApplication extends JFrame implements KeyListener {
                 }
             }
         };
-        //update player score or smth
         enemyThread.start();
     }
     public void setBoss(){
@@ -362,23 +366,6 @@ public class MainApplication extends JFrame implements KeyListener {
                 playername = text.getText();
             }
         });
-
-        /*
-        //Death Screen Test
-        goDeath = new JButton("Go Death");
-        goDeath.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    getrid();
-                }catch (Exception error){
-                    error.printStackTrace();
-                }
-                new MainApplication(2, null, false);
-            }
-        });
-        */
-
 
         JPanel control = new JPanel();
         control.setBounds(0,0, 1000, 50);

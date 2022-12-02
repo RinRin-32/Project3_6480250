@@ -25,7 +25,6 @@ public class Enemy extends JLabel {
         thisene = this;
         parentFrame = pf;
 
-        curX = (int)(Math.random() * parentFrame.getWidth()-1) + 1;
         //set images here
         jesseEm = new ImageIcon(imageFiles[0]).resize(jwidth, jheight);
         waltBo = new ImageIcon(imageFiles[1]).resize(wWidth, wheight); //resize()
@@ -35,12 +34,14 @@ public class Enemy extends JLabel {
 
         //setIcon(icon);
         if(mobselect){
+            curX = (int)(Math.random() * parentFrame.getWidth()-100) + 1;
             setIcon(waltBo);
             isBoss = true;
             hp = 100;
             shootSound = new SoundEffect(soundFiles[0]);
             curY -= 100;
         }else {
+            curX = (int)(Math.random() * parentFrame.getWidth()-1) + 1;
             setIcon(jesseEm);
             hp = 20;
             shootSound = new SoundEffect(soundFiles[1]);
@@ -53,30 +54,12 @@ public class Enemy extends JLabel {
 
     public boolean isBoss(){ return isBoss;}
 
-    public void moveset(){
-        //make enemy move across the screen from the top
-    }
-
     public void damaged(){
         hp -= 5;
     }
 
     public void shoot(){
-
         shootSound.playOnce();
-    }
-    public synchronized void gotHit(int n){
-        hp-= n;
-
-    }
-
-    public int getpoint(){
-        //return point
-        if(isBoss){
-            return 10;
-        }else{
-            return 2;
-        }
     }
 
     public void disappear(){ setVisible(false);}

@@ -54,7 +54,7 @@ public class MainProp extends JLabel {
         }
     }
 
-    public synchronized void updateHp(int n ){ hp += n;}
+    public synchronized void updateHP(int n ){ hp += n;}
 
     public int getHealth(){ return hp;}
 
@@ -62,7 +62,6 @@ public class MainProp extends JLabel {
         Thread shoot = new Thread(){
             public void run(){
                 CrashItems item = new CrashItems(parentFrame, thisprop);
-                item.setShootspeed(speed);
                 parentFrame.getDrawpane().add(item);
                 try {
                     item.moveup();

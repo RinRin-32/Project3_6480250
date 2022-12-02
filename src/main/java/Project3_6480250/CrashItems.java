@@ -18,8 +18,6 @@ public class CrashItems extends JLabel {
     private int width = 45, height = 45;
     private int curX, curY;
     private int speed = 500; //set sleep time, editable
-
-    private int shootspeed = 0;
     private int damage;
 
     private MainProp saul; private Enemy enemy;
@@ -35,10 +33,10 @@ public class CrashItems extends JLabel {
         hitSound = new SoundEffect(hit);
         if(e.isBoss()){
             shootSound = new SoundEffect(soundFiles[1]);//boss sound effect
-            damage = -5;
+            damage = -10;
         }else{
             shootSound = new SoundEffect(soundFiles[0]);
-            damage = -1;
+            damage = -5;
         }
         setIcon(itemImg);
         curX = e.getX()+30; curY = e.getY() + 150;//makes the object directly under the character
@@ -57,16 +55,6 @@ public class CrashItems extends JLabel {
         setBounds(curX,curY,width, height);
     }
 
-    public synchronized void getrid(){
-        if(enemy.getHealth() <= 0){
-            disappear();
-            parentFrame.getDrawpane().remove(this);
-        }
-    }
-
-    public void setShootspeed(int shootspeed) {
-        this.shootspeed = shootspeed;
-    }
 
     public void movedown() throws InterruptedException {
         setLocation(getX(), getY()+55);
@@ -75,7 +63,9 @@ public class CrashItems extends JLabel {
     }
 
     public void crashItemHit(){
-        hitSound.playOnce();
+        if(damage != 0) {
+            hitSound.playOnce();
+        }
     }
 
    public void moveup() throws InterruptedException{
@@ -89,7 +79,11 @@ public class CrashItems extends JLabel {
 
     public int getDamage () {return damage;} //for something like getting the crashitems damage then using it to subtract hitpoints?
     public int getHitPoints() { return -1;} //for reducing player's hp or smth
-    public void disappear(){ setVisible(false);}
+    public void disappear(){ setVisible(false); damage = 0; hitSound = null;}
 
     public void setSpeed(int newSpeed) {this.speed = newSpeed;}
+
+    public int damage(){
+        return damage;
+    }
 }
