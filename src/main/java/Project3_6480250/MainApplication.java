@@ -40,6 +40,8 @@ public class MainApplication extends JFrame implements KeyListener {
     private String resourcePath = projectPath + "/resources/";
     private String playername;
 
+    private int powerUpSelect;
+
     private static int score; private boolean muted = false, kill = false; private int diff, speed;
 
     public String getPlayername(){
@@ -565,16 +567,16 @@ public class MainApplication extends JFrame implements KeyListener {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 if(power.getSelectedValue().compareTo("Rebuttal")==0){
-
+                    powerUpSelect = 1;
                 }
                 if(power.getSelectedValue().compareTo("Lawsuit Hell Rain")==0){
-
+                    powerUpSelect = 2;
                 }
                 if(power.getSelectedValue().compareTo("Saul Badman")==0){
-
+                    powerUpSelect = 3;
                 }
                 if(power.getSelectedValue().compareTo("No YOU!")==0){
-
+                    powerUpSelect = 4;
                     /*
                     for removing powerups during cool downs
                     control.remove(power);
