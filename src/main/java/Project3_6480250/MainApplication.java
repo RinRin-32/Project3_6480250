@@ -16,6 +16,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 
 public class MainApplication extends JFrame implements KeyListener {
 
@@ -31,6 +32,7 @@ public class MainApplication extends JFrame implements KeyListener {
     private ImageIcon backgroundImg;
     private SoundEffect themeSound;
     private MainApplication currentFrame;
+    private ArrayList<Enemy> allenemy = new ArrayList<>();
 
     private MainProp player = new MainProp(this);
     private int frameWidth = 1280, frameHeight = 720;
@@ -42,6 +44,113 @@ public class MainApplication extends JFrame implements KeyListener {
 
     public String getPlayername(){
         return playername;
+    }
+
+    public void shoot(MainProp mainchar){
+        CrashItems lawsuit = new CrashItems(currentFrame, player);
+        drawpane.add(lawsuit);
+        drawpane.repaint();
+        Thread mcshoot = new Thread(){
+            public void run(){
+                while(lawsuit.getY()>0){
+                    try {
+                        lawsuit.moveup();
+                        repaint();
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                    for(Enemy i: allenemy){
+                        if(i.getBounds().intersects(lawsuit.getBounds())){
+                            lawsuit.crashItemHit();
+                            lawsuit.disappear();
+                            drawpane.remove(lawsuit);
+                            i.damaged();
+                            if(i.isBoss()){
+                                score += 2;
+                            }else{
+                                score += 1;
+                            }
+                            repaint();
+                        }
+                        if(i.getHealth() <= 0){
+                            i.disappear();
+                            drawpane.remove(i);
+
+                            if(i.isBoss()){
+                                score += 10;
+                            }else{
+                                score += 5;
+                            }
+                            //allenemy.remove(i);
+                            repaint();
+                        }
+                    }
+                    try {
+                        Thread.sleep((speed+1) * 5000/ diff);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                lawsuit.disappear();
+                drawpane.remove(lawsuit);
+                repaint();
+            }
+        };
+        mcshoot.start();
+    }
+
+    public void shoot(Enemy enemy){
+        Thread projspawn = new Thread(){
+          public void run(){
+              while(enemy.getHealth()>0 && !kill && player.getHealth() != 0){
+                  if(enemy.getHealth() <= 0){
+                      return;
+                  }
+                  enemy.shoot();
+                  CrashItems projectile = new CrashItems(currentFrame, enemy);
+                  try {
+                      Thread.sleep((speed+1) * 5000/ diff);
+                  } catch (InterruptedException e) {
+                      throw new RuntimeException(e);
+                  }
+                  drawpane.add(projectile);
+                  repaint();
+                  Thread moveprojectile = new Thread(){
+                      public void run(){
+                          while(projectile.getY()< currentFrame.getFrameHeight() && !kill && player.getHealth() != 0 ) {
+                              projectile.getrid();
+                              drawpane.repaint();
+                              try {
+                                  projectile.movedown();
+                              } catch (InterruptedException e) {
+                                  throw new RuntimeException(e);
+                              }
+                              if(player.getBounds().intersects(projectile.getBounds())){
+                                  score -= 2;
+                                  player.updateHP();
+                                  text.setText(Integer.toString(player.getHealth()));
+                                  projectile.crashItemHit();
+                                  projectile.disappear();
+                                  drawpane.remove(projectile);
+                                  if(player.getHealth() == 0){
+                                      try{
+                                          currentFrame.getrid();
+                                      }catch (Exception error){
+                                          error.printStackTrace();
+                                      }
+                                      new MainApplication(2, playername, muted);
+                                      return;
+                                  }
+                                  break;
+                              }
+
+                          }
+                      }
+                  }; moveprojectile.start();
+
+              }
+          }
+        };projspawn.start();
     }
 
 
@@ -62,6 +171,8 @@ public class MainApplication extends JFrame implements KeyListener {
                     while (player.getHealth() > 0&&!kill) {
                         if (i < 5) {
                             Enemy enemy = new Enemy(currentFrame, false);
+                            allenemy.add(enemy);
+                            shoot(enemy);
                             drawpane.add(enemy);
                             drawpane.repaint();
                         }
@@ -94,6 +205,8 @@ public class MainApplication extends JFrame implements KeyListener {
                         }
                         if (i < diff) {
                             Enemy walt = new Enemy(currentFrame, true);
+                            allenemy.add(walt);
+                            shoot(walt);
                             drawpane.add(walt);
                             drawpane.repaint();
                         }
@@ -109,6 +222,7 @@ public class MainApplication extends JFrame implements KeyListener {
                         }
                         Enemy walt = new Enemy(currentFrame, true);
                         drawpane.add(walt);
+                        shoot(walt);
                         drawpane.repaint();
 
                     }
@@ -439,11 +553,15 @@ public class MainApplication extends JFrame implements KeyListener {
                 new MainApplication(0, playername, muted);
             }
         });
+        text = new JTextField();
+        text.setEditable(false);
+        text.setText(Integer.toString(player.getHealth()));
 
         contentpane.add(new JLabel("Sound Toggle : "));
         control.add(soundtoggle[0]); control.add(soundtoggle[1]);
         control.add(restart);
         control.add(newgame);
+        control.add(text);
 
         DefaultListModel<String> powerups = new DefaultListModel<>();
         powerups.addElement("Rebuttal");
@@ -503,6 +621,8 @@ public class MainApplication extends JFrame implements KeyListener {
             public void mousePressed(MouseEvent e) {
                 //call method that shoot
                 //shoot is a thread so it move the location of the projectile
+
+                shoot(player);
             }
 
             @Override
@@ -518,7 +638,7 @@ public class MainApplication extends JFrame implements KeyListener {
 
             @Override
             public void mouseExited(MouseEvent e) {
-                //pause the game
+
             }
         });
 

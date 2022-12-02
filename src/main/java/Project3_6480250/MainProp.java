@@ -32,6 +32,10 @@ public class MainProp extends JLabel {
     public void setWalk(boolean w) {walk = w;}
     public boolean isWalk() { return walk;}
 
+    public void updateHP(){
+        hp -= 5;
+    }
+
     public void updateLocation(){
 
         if(up){

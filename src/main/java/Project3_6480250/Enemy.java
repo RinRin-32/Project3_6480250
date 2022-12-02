@@ -18,6 +18,9 @@ public class Enemy extends JLabel {
 
     private SoundEffect   shootSound;
 
+    public synchronized int getHealth(){
+        return hp;
+    }
     public Enemy(MainApplication pf, boolean mobselect){
         thisene = this;
         parentFrame = pf;
@@ -36,10 +39,12 @@ public class Enemy extends JLabel {
             isBoss = true;
             hp = 100;
             shootSound = new SoundEffect(soundFiles[0]);
+            curY -= 100;
         }else {
             setIcon(jesseEm);
             hp = 20;
             shootSound = new SoundEffect(soundFiles[1]);
+            curY -= 50;
 
         }
         setBounds(curX,curY, wWidth, wheight);
@@ -52,21 +57,8 @@ public class Enemy extends JLabel {
         //make enemy move across the screen from the top
     }
 
-    public void setCrashItem(){
-        Thread crashThread = new Thread(){
-            public void run(){
-                CrashItems item = new CrashItems(parentFrame, thisene);
-                item.setShootspeed(speed);
-                parentFrame.getDrawpane().add(item);
-                try {
-                    item.movedown();
-                } catch (InterruptedException ex) {
-                    throw new RuntimeException(ex);
-                }
-            }
-        };
-        //update playerhp
-        crashThread.start();
+    public void damaged(){
+        hp -= 5;
     }
 
     public void shoot(){
