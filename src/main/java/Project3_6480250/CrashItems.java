@@ -3,6 +3,7 @@ package Project3_6480250;
 
 
 import javax.swing.*;
+import java.util.ArrayList;
 
 public class CrashItems extends JLabel {
     //crash into mainprop, reducing  hp or such
@@ -72,6 +73,28 @@ public class CrashItems extends JLabel {
         setLocation(getX(), getY()-55);
         Thread.sleep((parentFrame.getSpeed()+1) * 1000/ parentFrame.getDiff());
         parentFrame.getDrawpane().repaint();
+   }
+
+   public void powerUP(int type, MainProp saul, ArrayList<Enemy> allenemy){
+        switch(type){
+            case 1:
+                damage = 0;
+                break;
+            case 2:
+                parentFrame.shoot(saul);
+                parentFrame.shoot(saul);
+                parentFrame.shoot(saul);
+                break;
+            case 3:
+                    damage *= -1;
+                break;
+            case 4:
+                for(Enemy i : allenemy){
+                    parentFrame.getDrawpane().remove(i);
+                }
+                parentFrame.getDrawpane().repaint();
+                break;
+        }
    }
 
 
