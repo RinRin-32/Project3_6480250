@@ -28,8 +28,6 @@ public class CrashItems extends JLabel {
         //set images here
         //set sound
         hitSound = new SoundEffect(hit); //I don't know if you use a big pew or small pew
-        //setIcon(icon);
-        hitSound = new SoundEffect(hit);
         if(e.isBoss()){
             damage = -10;
         }else{
@@ -47,8 +45,6 @@ public class CrashItems extends JLabel {
         //set images here
         //set sound
         hitSound = new SoundEffect(hit); //I don't know if you use a big pew or small pew
-        //setIcon(icon);
-        hitSound = new SoundEffect(hit);
         if(e.isBoss()){
             damage = -10;
         }else{
