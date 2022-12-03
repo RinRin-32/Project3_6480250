@@ -487,7 +487,7 @@ public class MainApplication extends JFrame implements KeyListener {
     public String getPlayername(){
         return playername;
     }
-    public synchronized void addscore(int n){
+    public static synchronized void addscore(int n){
         score += n;
     }
     public void shooting(CrashItems lawsuit){

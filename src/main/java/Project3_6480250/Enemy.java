@@ -31,14 +31,14 @@ public class Enemy extends JLabel {
 
         //setIcon(icon);
         if(mobselect){
-            curX = (int)(Math.random() * parentFrame.getWidth()-100) + 1;
+            curX = (int)(Math.random() * parentFrame.getWidth()-300) + 100;
             setIcon(waltBo);
             isBoss = true;
             hp = 100;
             shootSound = new SoundEffect(soundFiles[0]);
             curY -= 100;
         }else {
-            curX = (int)(Math.random() * parentFrame.getWidth()-200) + 1;
+            curX = (int)(Math.random() * parentFrame.getWidth()-200) + 100;
             setIcon(jesseEm);
             hp = 20;
             shootSound = new SoundEffect(soundFiles[1]);
