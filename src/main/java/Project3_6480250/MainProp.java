@@ -12,13 +12,10 @@ public class MainProp extends JLabel {
     private String imageFiles = "src/main/java/Project3_6480250/resources/goodman.png";//haven't added image yet
     private int width = 100, height = 100;//has to set size here
     private int curX = 640, curY = 360; //has to set location here
-    private boolean walk = false, up = true;
-    private int speed;//sleep duration
     private int hp = 40;
-    private MainProp thisprop;
+    private boolean invinsible = false, heal = false;
 
     public MainProp(MainApplication pf){
-        thisprop = this;
         parentFrame = pf;
         goodmanFace = new ImageIcon((imageFiles)).resize(width, height);
         //set images here
@@ -28,50 +25,35 @@ public class MainProp extends JLabel {
         //setIcon(icon);
         setBounds(curX, curY, width, height);
     }
-    public void setSpeed(int s) { speed = s;}
-    public void setWalk(boolean w) {walk = w;}
-    public boolean isWalk() { return walk;}
-
-    public void updateHP(){
-        hp -= 5;
+    public void isInvinsible(){
+        invinsible = true;
+    }
+    public void invoff(){
+        invinsible = false;
+    }
+    public void ishealing(){
+        heal = true;
+    }
+    public void healoff(){
+        heal = false;
     }
 
-    public void updateLocation(){
 
-        if(up){
-            //curY = smth
-            //if on edge frame move to parentFrame.getHeight()
+    public synchronized void updateHP(int n ){
+        if(heal){
+            hp-=n;
+            //System.out.println("heal");
+        }else if(invinsible){
+            //System.out.println("inv");
         }else{
-            //curY = smth
-            //if on edge frame move to curY = 0
+            hp += n;
+            //System.out.println("norm");
         }
-        setLocation(curX, curY);
-        repaint();
-        try{
-            Thread.sleep(speed);
-        }catch (InterruptedException e ){
-            e.printStackTrace();
-        }
-    }
 
-    public synchronized void updateHP(int n ){ hp += n;}
+    }
 
     public int getHealth(){ return hp;}
 
-    public void shoot(){
-        Thread shoot = new Thread(){
-            public void run(){
-                CrashItems item = new CrashItems(parentFrame, thisprop);
-                parentFrame.getDrawpane().add(item);
-                try {
-                    item.moveup();
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        };
-        shoot.start();
-    }
 
 
 

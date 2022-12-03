@@ -13,8 +13,6 @@ public class Enemy extends JLabel {
     private boolean isBoss = false;
     private int jwidth = 125, jheight = 129, wWidth = 250, wheight = 209;//has to set size here
     private int curX, curY = 50; //has to set location here
-    private int speed = 500; //set sleep time, editable
-    private Enemy thisene;
 
     private SoundEffect   shootSound;
 
@@ -22,7 +20,6 @@ public class Enemy extends JLabel {
         return hp;
     }
     public Enemy(MainApplication pf, boolean mobselect){
-        thisene = this;
         parentFrame = pf;
 
         //set images here
@@ -51,10 +48,13 @@ public class Enemy extends JLabel {
         setBounds(curX,curY, wWidth, wheight);
 
     }
+    public void killall(){
+        hp = 0;
+    }
 
     public boolean isBoss(){ return isBoss;}
 
-    public void damaged(){
+    public synchronized void damaged(){
         hp -= 5;
     }
 
