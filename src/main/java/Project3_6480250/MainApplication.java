@@ -44,253 +44,30 @@ public class MainApplication extends JFrame implements KeyListener {
 
     private static int score; private boolean muted = false, kill = false; private int diff, speed;
 
-    public String getPlayername(){
-        return playername;
-    }
-    public synchronized void addscore(int n){
-        score += n;
-    }
-    public void shooting(CrashItems lawsuit){
-        while(lawsuit.getY()>0){
-            try {
-                lawsuit.moveup();
-                repaint();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-            for(Enemy i: allenemy){
-                if(i.getBounds().intersects(lawsuit.getBounds())){
-                    lawsuit.crashItemHit();
-                    lawsuit.disappear();
-                    drawpane.remove(lawsuit);
-                    i.damaged();
-                    if(i.isBoss()){
-                        addscore(2);
-                    }else{
-                        addscore(1);
-                    }
-                    repaint();
-                }
-                if(i.getHealth() <= 0){
-                    i.disappear(); totalenemy--;
-                    drawpane.remove(i);
 
-                    if(i.isBoss()){
-                        addscore(5);
-                    }else{
-                        addscore(2);
-                    }
-                    repaint();
-                }
-            }
-            try {
-                Thread.sleep((speed+1) * 2500/ diff);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        lawsuit.disappear();
-        drawpane.remove(lawsuit);
-        repaint();
+    public MainApplication(int frame, String pn, boolean sound, int difficulty, int speed){
+        playername = pn;
+        muted = sound;
+        diff = difficulty;
+        this.speed = speed;
+        execution(frame);
+
     }
 
+    public MainApplication(int frame, String pn, boolean sound){
+        playername = pn;
+        muted = sound;
+        diff = 2;
+        speed = 5;
+        score = 0;
+        execution(frame);
 
-
-    public void shoot(MainProp mainchar){
-        CrashItems lawsuit = new CrashItems(currentFrame, player);
-        drawpane.add(lawsuit);
-        drawpane.repaint();
-        Thread mcshoot = new Thread(){
-            public void run(){
-                shooting(lawsuit);
-            }
-        };
-        mcshoot.start();
     }
 
+    public static void main(String [] args){
 
-    public void shoot(MainProp mainchar, int n){
-        CrashItems lawsuit = new CrashItems(currentFrame, player, n);
-        drawpane.add(lawsuit);
-        drawpane.repaint();
-        Thread mcshoot = new Thread(){
-            public void run(){
-                shooting(lawsuit);
-            }
-        };
-        mcshoot.start();
+        new MainApplication(0, null, false);
     }
-
-    public void shoot(Enemy enemy, int n){
-        Thread projspawn = new Thread(){
-          public void run(){
-              while(enemy.getHealth()>0 && !kill && player.getHealth() > 0){
-                  if(enemy.getHealth() <= 0||player.getHealth()<0){
-                      return;
-                  }
-                  enemy.shoot();
-                  CrashItems projectile = new CrashItems(currentFrame, enemy, n);
-                  try {
-                      Thread.sleep((speed+1) * 5000/ diff);
-                  } catch (InterruptedException e) {
-                      throw new RuntimeException(e);
-                  }
-                  drawpane.add(projectile);
-                  repaint();
-                  Thread moveprojectile = new Thread(){
-                      public void run(){
-                          while(projectile.getY()< currentFrame.getFrameHeight() && !kill && player.getHealth() > 0 ) {
-                              if(player.getHealth() <= 0){
-                                  try{
-                                      currentFrame.getrid();
-                                  }catch (Exception error){
-                                      error.printStackTrace();
-                                  }
-                                  new MainApplication(2, playername, muted);
-                                  break;
-                              }
-                              if(enemy.getHealth() <= 0){
-                                  projectile.disappear();
-                                  drawpane.remove(projectile);
-                              }
-                              drawpane.repaint();
-                              try {
-                                  projectile.movedown();
-                              } catch (InterruptedException e) {
-                                  throw new RuntimeException(e);
-                              }
-                              if(player.getBounds().intersects(projectile.getBounds())){
-                                  addscore(-2);
-                                  player.updateHP(projectile.damage());
-                                  text.setText(Integer.toString(player.getHealth()));
-                                  projectile.crashItemHit();
-                                  projectile.disappear();
-                                  drawpane.remove(projectile);
-                                  if(player.getHealth() <= 0){
-                                      try{
-                                          currentFrame.getrid();
-                                      }catch (Exception error){
-                                          error.printStackTrace();
-                                      }
-                                      new MainApplication(2, playername, muted);
-                                  }
-                                  break;
-                              }
-
-                          }
-                      }
-                  }; moveprojectile.start();
-
-              }
-          }
-        };projspawn.start();
-    }
-
-
-    public JLabel getDrawpane() {
-        return drawpane;
-    }
-    public int getDiff(){
-        return diff;
-    }
-    public void setEnemy(){
-        //spawn enemy with the rate of diff
-        //not implemented yet
-        //once created the enemy automatically start shooting
-        Thread enemyThread = new Thread(){
-            public void run(){
-                int i = 0;
-                if(diff != 5) {
-                    while (player.getHealth() > 0&&!kill) {
-                        if (i < 5) {
-                            Enemy enemy = new Enemy(currentFrame, false);
-                            allenemy.add(enemy); totalenemy++;
-                            shoot(enemy,0);
-                            drawpane.add(enemy);
-                            drawpane.repaint();
-                        }
-                        i++;
-                        try {
-                            Thread.sleep((i+1) * speed * 1000 / diff);
-                        } catch (InterruptedException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                }
-            }
-        };
-        enemyThread.start();
-    }
-    public void setBoss(){
-        //spawn boss with the rate of diff
-        //not yet implemented
-        //once created the enemy automatically start shooting
-        Thread enemyThread = new Thread(){
-            public void run(){
-                int i = 0;
-                if(diff != 5) {
-                    while (player.getHealth() > 0&&!kill) {
-                        try {
-                            Thread.sleep((i+1) * speed * 5000 / diff);
-                        } catch (InterruptedException e) {
-                            throw new RuntimeException(e);
-                        }
-                        if (i < diff) {
-                            Enemy walt = new Enemy(currentFrame, true);
-                            allenemy.add(walt);
-                            shoot(walt,0);
-                            shoot(walt, 1);
-                            drawpane.add(walt); totalenemy++;
-                            drawpane.repaint();
-                        }
-                        i++;
-
-                    }
-                }else{
-                    while (player.getHealth() > 0&&!kill) {
-                        try {
-                            Thread.sleep((i+1) * speed * 5000 / diff);
-                        } catch (InterruptedException e) {
-                            throw new RuntimeException(e);
-                        }
-                        Enemy walt = new Enemy(currentFrame, true);
-                        drawpane.add(walt); totalenemy++;
-                        shoot(walt,0);
-                        shoot(walt, 1);
-                        drawpane.repaint();
-
-                    }
-                }
-            }
-        };
-        enemyThread.start();
-    }
-
-
-    public void movebutton(){
-        Thread buttonmover = new Thread(){
-            public void run(){
-                while(!button.isClicked()) {
-                    button.blink();
-                    if(button.isClicked()){
-                        break;
-                    }
-                }
-            }
-        };
-        buttonmover.start();
-    }
-
-    public int getFrameHeight(){
-        return frameHeight;
-    }
-    public int getFrameWidth(){
-        return frameWidth;
-    }
-    public int getSpeed(){
-        return speed;
-    }
-
 
     public void execution(int n){
         //main part of the application
@@ -326,30 +103,12 @@ public class MainApplication extends JFrame implements KeyListener {
         }
         setVisible(true);
     }
-    public MainApplication(int frame, String pn, boolean sound, int difficulty, int speed){
-        playername = pn;
-        muted = sound;
-        diff = difficulty;
-        this.speed = speed;
-        execution(frame);
-
-    }
-
-    public MainApplication(int frame, String pn, boolean sound){
-        playername = pn;
-        muted = sound;
-        diff = 2;
-        speed = 5;
-        score = 0;
-        execution(frame);
-
-    }
 
     public void frameone() {
         backgroundImg  = new ImageIcon(resourcePath + "gusBackground.jpg").resize(frameWidth, frameHeight);
         drawpane = new JLabel();
         drawpane.setIcon(backgroundImg);
-            drawpane.setLayout(null);
+        drawpane.setLayout(null);
         themeSound = new SoundEffect(resourcePath + "startscreensong.wav"); themeSound.playLoop();
         drawpane.setVisible(true);
         //drawpane.repaint();
@@ -724,6 +483,253 @@ public class MainApplication extends JFrame implements KeyListener {
         //add listeners for gameplays
 
     }
+
+    public String getPlayername(){
+        return playername;
+    }
+    public synchronized void addscore(int n){
+        score += n;
+    }
+    public void shooting(CrashItems lawsuit){
+        while(lawsuit.getY()>0){
+            try {
+                lawsuit.moveup();
+                repaint();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            for(Enemy i: allenemy){
+                if(i.getBounds().intersects(lawsuit.getBounds())){
+                    lawsuit.crashItemHit();
+                    lawsuit.disappear();
+                    drawpane.remove(lawsuit);
+                    i.damaged();
+                    if(i.isBoss()){
+                        addscore(2);
+                    }else{
+                        addscore(1);
+                    }
+                    repaint();
+                }
+                if(i.getHealth() <= 0){
+                    i.disappear(); totalenemy--;
+                    drawpane.remove(i);
+
+                    if(i.isBoss()){
+                        addscore(5);
+                    }else{
+                        addscore(2);
+                    }
+                    repaint();
+                }
+            }
+            try {
+                Thread.sleep((speed+1) * 2500/ diff);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        lawsuit.disappear();
+        drawpane.remove(lawsuit);
+        repaint();
+    }
+
+
+
+    public void shoot(MainProp mainchar){
+        CrashItems lawsuit = new CrashItems(currentFrame, player);
+        drawpane.add(lawsuit);
+        drawpane.repaint();
+        Thread mcshoot = new Thread(){
+            public void run(){
+                shooting(lawsuit);
+            }
+        };
+        mcshoot.start();
+    }
+
+
+    public void shoot(MainProp mainchar, int n){
+        CrashItems lawsuit = new CrashItems(currentFrame, player, n);
+        drawpane.add(lawsuit);
+        drawpane.repaint();
+        Thread mcshoot = new Thread(){
+            public void run(){
+                shooting(lawsuit);
+            }
+        };
+        mcshoot.start();
+    }
+
+    public void shoot(Enemy enemy, int n){
+        Thread projspawn = new Thread(){
+          public void run(){
+              while(enemy.getHealth()>0 && !kill && player.getHealth() > 0){
+                  if(enemy.getHealth() <= 0||player.getHealth()<0){
+                      return;
+                  }
+                  enemy.shoot();
+                  CrashItems projectile = new CrashItems(currentFrame, enemy, n);
+                  try {
+                      Thread.sleep((speed+1) * 5000/ diff);
+                  } catch (InterruptedException e) {
+                      throw new RuntimeException(e);
+                  }
+                  drawpane.add(projectile);
+                  repaint();
+                  Thread moveprojectile = new Thread(){
+                      public void run(){
+                          while(projectile.getY()< currentFrame.getFrameHeight() && !kill && player.getHealth() > 0 ) {
+                              if(player.getHealth() <= 0){
+                                  try{
+                                      currentFrame.getrid();
+                                  }catch (Exception error){
+                                      error.printStackTrace();
+                                  }
+                                  new MainApplication(2, playername, muted);
+                                  break;
+                              }
+                              if(enemy.getHealth() <= 0){
+                                  projectile.disappear();
+                                  drawpane.remove(projectile);
+                              }
+                              drawpane.repaint();
+                              try {
+                                  projectile.movedown();
+                              } catch (InterruptedException e) {
+                                  throw new RuntimeException(e);
+                              }
+                              if(player.getBounds().intersects(projectile.getBounds())){
+                                  addscore(-2);
+                                  player.updateHP(projectile.damage());
+                                  text.setText(Integer.toString(player.getHealth()));
+                                  projectile.crashItemHit();
+                                  projectile.disappear();
+                                  drawpane.remove(projectile);
+                                  if(player.getHealth() <= 0){
+                                      try{
+                                          currentFrame.getrid();
+                                      }catch (Exception error){
+                                          error.printStackTrace();
+                                      }
+                                      new MainApplication(2, playername, muted);
+                                  }
+                                  break;
+                              }
+
+                          }
+                      }
+                  }; moveprojectile.start();
+
+              }
+          }
+        };projspawn.start();
+    }
+
+
+    public JLabel getDrawpane() {
+        return drawpane;
+    }
+    public int getDiff(){
+        return diff;
+    }
+    public void setEnemy(){
+        //spawn enemy with the rate of diff
+        //not implemented yet
+        //once created the enemy automatically start shooting
+        Thread enemyThread = new Thread(){
+            public void run(){
+                int i = 0;
+                if(diff != 5) {
+                    while (player.getHealth() > 0&&!kill) {
+                        if (i < 5) {
+                            Enemy enemy = new Enemy(currentFrame, false);
+                            allenemy.add(enemy); totalenemy++;
+                            shoot(enemy,0);
+                            drawpane.add(enemy);
+                            drawpane.repaint();
+                        }
+                        i++;
+                        try {
+                            Thread.sleep((i+1) * speed * 1000 / diff);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
+            }
+        };
+        enemyThread.start();
+    }
+    public void setBoss(){
+        //spawn boss with the rate of diff
+        //not yet implemented
+        //once created the enemy automatically start shooting
+        Thread enemyThread = new Thread(){
+            public void run(){
+                int i = 0;
+                if(diff != 5) {
+                    while (player.getHealth() > 0&&!kill) {
+                        try {
+                            Thread.sleep((i+1) * speed * 5000 / diff);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                        if (i < diff) {
+                            Enemy walt = new Enemy(currentFrame, true);
+                            allenemy.add(walt);
+                            shoot(walt,0);
+                            shoot(walt, 1);
+                            drawpane.add(walt); totalenemy++;
+                            drawpane.repaint();
+                        }
+                        i++;
+
+                    }
+                }else{
+                    while (player.getHealth() > 0&&!kill) {
+                        try {
+                            Thread.sleep((i+1) * speed * 5000 / diff);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                        Enemy walt = new Enemy(currentFrame, true);
+                        drawpane.add(walt); totalenemy++;
+                        shoot(walt,0);
+                        shoot(walt, 1);
+                        drawpane.repaint();
+
+                    }
+                }
+            }
+        };
+        enemyThread.start();
+    }
+
+
+    public void movebutton(){
+        Thread buttonmover = new Thread(){
+            public void run(){
+                while(!button.isClicked()) {
+                    button.blink();
+                    if(button.isClicked()){
+                        break;
+                    }
+                }
+            }
+        };
+        buttonmover.start();
+    }
+
+    public int getFrameHeight(){
+        return frameHeight;
+    }
+    public int getFrameWidth(){
+        return frameWidth;
+    }
+    public int getSpeed(){
+        return speed;
+    }
     public void getrid(){
         themeSound.stop();
         kill = true;
@@ -734,15 +740,6 @@ public class MainApplication extends JFrame implements KeyListener {
     }
 
 
-
-
-
-
-
-    public static void main(String [] args){
-
-        new MainApplication(0, null, false);
-    }
 
     @Override
     public void keyTyped(KeyEvent e) {
