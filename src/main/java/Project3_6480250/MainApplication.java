@@ -502,7 +502,6 @@ public class MainApplication extends JFrame implements KeyListener {
                 if(i.getBounds().intersects(lawsuit.getBounds())){
                     lawsuit.crashItemHit();
                     lawsuit.disappear();
-                    lawsuit.crashItemHit();
                     drawpane.remove(lawsuit);
                     i.damaged();
                     if(i.isBoss()){
