@@ -38,7 +38,7 @@ public class Enemy extends JLabel {
             shootSound = new SoundEffect(soundFiles[0]);
             curY -= 100;
         }else {
-            curX = (int)(Math.random() * parentFrame.getWidth()-1) + 1;
+            curX = (int)(Math.random() * parentFrame.getWidth()-200) + 1;
             setIcon(jesseEm);
             hp = 20;
             shootSound = new SoundEffect(soundFiles[1]);
