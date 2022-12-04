@@ -3,14 +3,12 @@ package Project3_6480250;
 
 
 import javax.swing.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 
 public class MainProp extends JLabel {
-    private ImageIcon goodmanFace;
+    private final ImageIcon goodmanFace;
     private MainApplication parentFrame;
-    private String imageFiles = "src/main/java/Project3_6480250/resources/goodman.png";//haven't added image yet
-    private int width = 100, height = 100;//has to set size here
+    private final String imageFiles = "src/main/java/Project3_6480250/resources/goodman.png";
+    private final int width = 100, height = 100;//has to set size here
     private int curX = 640, curY = 360; //has to set location here
     private int hp = 40;
     private boolean invinsible = false, heal = false;
@@ -42,12 +40,10 @@ public class MainProp extends JLabel {
     public synchronized void updateHP(int n ){
         if(heal){
             hp-=n;
-            //System.out.println("heal");
         }else if(invinsible){
-            //System.out.println("inv");
+            //nothing happens as saul wouldn't heal or take damage
         }else{
             hp += n;
-            //System.out.println("norm");
         }
 
     }
